@@ -4,24 +4,24 @@
 
 **Phase**: 1 — Core Wizard Skill
 **Plan**: 01-01 — Core wizard skill (answer loop, question banks, file mode)
-**Status**: In progress
+**Status**: Complete — ready for Phase 2
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 1 — Core Wizard Skill
+**Current focus:** Phase 2 — Capture + Synthesis (next)
 
-## Active Work
+## Completed Work
 
-Executing Plan 1 tasks:
-- [ ] Task 1: Add Answer Loop + Research Priority + Mode Detection to SKILL.md
-- [ ] Task 2: Create plugin/references/describe-questions.md
-- [ ] Task 3: Create plugin/references/explore-questions.md
-- [ ] Task 4: Add File Mode (Phase 2b) to SKILL.md
-- [ ] Task 5: Update SKILL.md frontmatter
-- [ ] Task 6: Verification against invariants
+Plan 01-01 tasks — all verified complete (2026-03-19):
+- [x] Task 1: Add Answer Loop + Research Priority + Mode Detection to SKILL.md (commit 155369d)
+- [x] Task 2: Create plugin/references/describe-questions.md (commit 1cc3087)
+- [x] Task 3: Create plugin/references/explore-questions.md (commit ec8affb)
+- [x] Task 4: Add File Mode (Phase 2b) to SKILL.md (commit 46989dd)
+- [x] Task 5: Update SKILL.md frontmatter (commit 46989dd)
+- [x] Task 6: Verification — all 8 invariants PASS
 
 ## Decisions
 
