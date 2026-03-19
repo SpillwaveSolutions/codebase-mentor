@@ -263,6 +263,7 @@ Output always goes to `{resolved_storage}/docs/{session_id}/`. Each session prod
 ## Data Layer
 ## Key Concepts (from Q&A)
 ## Traced Call Chains
+## Constraints
 ## Open Questions
 ```
 
