@@ -1,0 +1,71 @@
+# Codebase Wizard
+
+## What This Is
+
+A Claude Code skill + plugin that transforms codebases into well-documented knowledge bases through a wizard-style Q&A interface. It has two modes: **Describe** (repo owner documents their codebase) and **Explore** (new developer gets an interactive tour). All conversations are auto-captured as raw JSON/YAML and synthesized on-demand into a human-readable transcript and a structured CODEBASE.md. Ships with pre-authorized agents (policy islands) that eliminate the "May I?" approval loop entirely.
+
+## Core Value
+
+A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
+
+## Requirements
+
+### Validated
+
+<!-- Existing plugin/SKILL.md already ships these capabilities -->
+
+- ✓ Repo scanning (entry points, folder roles, auth, data layer, docs) — existing
+- ✓ Conversational Q&A about code (show snippet → explain → predict next) — existing
+- ✓ Session history stack with navigation (rewind, jump, bookmarks) — existing
+- ✓ Tutorial mode (parse docs into steps, walk user through) — existing
+- ✓ Session persistence (save/load as markdown, restore session state) — existing
+- ✓ Tone and formatting rules (chat-feel.md governs all phases) — existing
+
+### Active
+
+- [ ] Two-mode wizard: **Describe mode** (repo owner) and **Explore mode** (new developer)
+- [ ] Wizard asks follow-up questions to fill context Claude cannot infer (ownership, intent, constraints)
+- [ ] Raw Q&A auto-captured as JSON/YAML to `.claude/code-wizard/` or `.code-wizard/`
+- [ ] Check both storage locations; ask user preference on first run if neither exists
+- [ ] On-demand synthesis: transcript `.md` + structured `CODEBASE.md` generated from raw logs
+- [ ] Agent Rulez integration for hook-based auto-capture (PostToolUse/Stop hooks)
+- [ ] Sample Agent Rulez YAML config ships with the plugin
+- [ ] `/setup` command: installs Agent Rulez, writes `settings.local.json` permissions, creates agent definition files
+- [ ] `/export` command: manual trigger to synthesize raw logs → formatted docs
+- [ ] Pre-authorized agent definitions (policy islands) for zero-approval execution
+- [ ] Agents cover: file read/write, bash for scan scripts, git read ops, Node for gsd-tools
+
+### Out of Scope
+
+- Real-time collaboration / multi-user sessions — single-developer tool
+- Cloud sync of captured sessions — local-only storage
+- IDE integrations (VS Code extension, etc.) — Claude Code CLI only
+- Automatic git commits of generated docs — user decides what to commit
+
+## Context
+
+The existing `plugin/SKILL.md` provides a strong 5-phase foundation (scan → Q&A → nav → tutorial → persist). The new work extends this foundation rather than replacing it. The codebase map in `.planning/codebase/` provides architecture context for planning.
+
+Agent Rulez (https://github.com/SpillwaveSolutions/agent_rulez) provides the hook infrastructure for auto-capture. The setup command bootstraps it so users don't have to configure hooks manually.
+
+The policy islands pattern (documented in the article provided) is the architectural model for permission management: skills contain automation logic, agents define permission boundaries, commands are thin wrappers that fork into agents.
+
+## Constraints
+
+- **Platform**: Claude Code CLI only — no other runtimes
+- **Storage**: Local filesystem only (`.claude/code-wizard/` or `.code-wizard/`)
+- **Hook infrastructure**: Agent Rulez must be installable without elevated permissions
+- **Agent Rulez**: Hooks declared in YAML, not hardcoded in settings.json
+
+## Key Decisions
+
+| Decision | Rationale | Outcome |
+|----------|-----------|---------|
+| Two separate modes (Describe/Explore) | Repo owners and newcomers have different goals and question sets | — Pending |
+| Raw storage as JSON/YAML, docs generated on-demand | Avoids reprocessing; raw log is source of truth | — Pending |
+| Check both `.claude/code-wizard/` and `.code-wizard/` | Users with multiple agents prefer top-level; Claude Code users may prefer `.claude/` | — Pending |
+| Agent Rulez for hooks instead of hardcoded hooks | Declarative YAML config is portable and auditable | — Pending |
+| Policy islands pattern for all agents | Eliminates approval fatigue; permissions declared once upfront | — Pending |
+
+---
+*Last updated: 2026-03-19 after initialization*
