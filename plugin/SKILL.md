@@ -1,16 +1,25 @@
 ---
-name: codebase-mentor
+name: codebase-wizard
 description: >
-  Conversational tutor-style agent for exploring and understanding codebases.
-  Use this skill whenever a user wants to understand how their code works, asks
-  questions like "how does auth work?", "walk me through this repo", "explain
-  this file", "trace this function", or wants a guided tour of a codebase.
-  Also triggers on: "teach me this code", "explain like I'm new", "how does X
-  connect to Y", "what calls this", "where does this ID come from", "walk me
-  through login", or any request to navigate or learn from code. Activate even
-  if the user just pastes code and asks a question—treat it as a micro-repo.
-  Also use when user says "save this chat", "export as tutorial", or "load
-  our last session."
+  Universal explainer for codebases, specs, design docs, and markdown files.
+  Activates when a user wants to understand how their code works, explore a
+  new codebase, document an existing one, or get walked through any markdown
+  artifact (specs, roadmaps, design docs, milestone plans).
+
+  Trigger on: "explain this codebase", "walk me through this", "describe
+  this code", "I'm new to this repo", "how does X work", "what calls this",
+  "where does this get used", "explain this spec", "walk me through this
+  roadmap", "what does this milestone mean", "explain this design doc",
+  "--describe", "--explore", "--file <path>".
+
+  Also triggers when user pastes code or a markdown file and asks questions
+  about it — treat as a micro-artifact.
+
+  Produces (written to {resolved_storage}/docs/{session_id}/):
+    - SESSION-TRANSCRIPT.md (all modes — always generated)
+    - CODEBASE.md (describe mode)
+    - TOUR.md (explore mode)
+    - FILE-NOTES.md (file mode)
 ---
 
 # Codebase Mentor
@@ -266,6 +275,70 @@ After every answer, add to history:
 ```
 { topic: "login endpoint", file: "routes/auth.js", line: 14 }
 ```
+
+---
+
+## Phase 2b: File Mode (`--file <path>`)
+
+Triggered by `--file <path>` arg, or when user says "explain this
+file" / "walk me through this doc" while pointing at a .md file.
+
+### Step 1 — Parse Structure
+
+Read the file. Extract heading hierarchy as a section list:
+```
+[ "## Overview", "## Requirements", "### Auth", ... ]
+```
+
+Report to user:
+> "This doc has [N] sections. I'll walk through them one at a
+>  time. Say 'next' to advance or ask anything about what I
+>  just showed."
+
+### Step 2 — Walk Each Section (apply Answer Loop)
+
+For each section:
+1. Quote the section content as a code block with anchor:
+   `// ROADMAP.md → Phase 3: Auth → "Requirements" → L14-31`
+2. Explain it (Answer Loop steps 3-5, omit connections step)
+3. Ask one follow-up question if context warrants:
+   > "The spec says 'email verification required' — is that
+   >  already in the codebase or still to-build?"
+
+### Step 3 — Capture Answers
+
+Every user answer is added to session stack (captured by
+Agent Rulez or in-memory buffer — see Plan 2).
+
+### Step 4 — Section Transitions
+
+After each section:
+> **Next — want to:**
+> - **Next section**: [section name]
+> - **Deeper here**: ask me more about this section
+> - **Jump to**: [specific section name]
+
+### File Mode Output
+
+After completing or when user says "done", offer:
+> "Want me to save FILE-NOTES.md? It'll have each section with
+>  my explanation and your follow-up Q&A."
+
+On confirmation, generate in `{resolved_storage}/docs/{session_id}/`:
+
+**FILE-NOTES.md:**
+Each section with anchor, explanation, and captured Q&A.
+"Still open" items where questions couldn't be answered.
+
+**SESSION-TRANSCRIPT.md:**
+Full conversational flow with all code blocks.
+Always generated alongside FILE-NOTES.md.
+
+### Anti-Patterns
+
+- Never explain the whole file at once before the user asks
+- Never skip sections silently — always offer to skip explicitly
+- Never invent content not in the document
 
 ---
 
