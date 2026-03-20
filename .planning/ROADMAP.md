@@ -7,7 +7,7 @@ Build a Claude Code skill + plugin that transforms codebases into well-documente
 ## Phases
 
 - [ ] **Phase 1: Core Wizard Skill** - Answer loop, Describe/Explore modes, File mode, question banks
-- [ ] **Phase 2: Capture + Synthesis** - Agent Rulez hooks, JSON capture, /export command, synthesis pipeline
+- [x] **Phase 2: Capture + Synthesis** - Agent Rulez hooks, JSON capture, /export command, synthesis pipeline (completed 2026-03-20)
 - [ ] **Phase 3: Permission Agents + Commands** - Policy island agents, /setup command, multi-platform codex-tools
 
 ## Phase Details
@@ -60,5 +60,5 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Wizard Skill | 0/1 | In progress | - |
-| 2. Capture + Synthesis | 0/2 | Not started | - |
+| 2. Capture + Synthesis | 1/1 | Complete   | 2026-03-20 |
 | 3. Permission Agents + Commands | 0/2 | Not started | - |
