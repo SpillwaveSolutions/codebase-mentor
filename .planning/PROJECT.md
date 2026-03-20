@@ -21,6 +21,14 @@ A developer can run one command and walk away with a documented codebase — wit
 - ✓ Session persistence (save/load as markdown, restore session state) — existing
 - ✓ Tone and formatting rules (chat-feel.md governs all phases) — existing
 
+### Validated in Phase 03: permission-agents-commands
+
+- ✓ Pre-authorized agent definitions (policy islands) for zero-approval execution — `plugin/agents/codebase-wizard-agent.md` with 15 scoped allowed_tools
+- ✓ `/setup` command: installs Agent Rulez, writes `settings.local.json` permissions, creates agent definition files — `plugin/commands/codebase-wizard-setup.md`
+- ✓ `/export` command: manual trigger to synthesize raw logs → formatted docs — `plugin/commands/codebase-wizard-export.md`
+- ✓ Cross-platform tool name mapping (Claude Code / OpenCode / Gemini CLI / Codex) — `plugin/references/codex-tools.md`
+- ✓ Main `/codebase-wizard` command with `context: fork` + agent reference — `plugin/commands/codebase-wizard.md`
+
 ### Active
 
 - [ ] Two-mode wizard: **Describe mode** (repo owner) and **Explore mode** (new developer)
@@ -30,10 +38,6 @@ A developer can run one command and walk away with a documented codebase — wit
 - [ ] On-demand synthesis: transcript `.md` + structured `CODEBASE.md` generated from raw logs
 - [ ] Agent Rulez integration for hook-based auto-capture (PostToolUse/Stop hooks)
 - [ ] Sample Agent Rulez YAML config ships with the plugin
-- [ ] `/setup` command: installs Agent Rulez, writes `settings.local.json` permissions, creates agent definition files
-- [ ] `/export` command: manual trigger to synthesize raw logs → formatted docs
-- [ ] Pre-authorized agent definitions (policy islands) for zero-approval execution
-- [ ] Agents cover: file read/write, bash for scan scripts, git read ops, Node for gsd-tools
 
 ### Out of Scope
 
@@ -68,4 +72,4 @@ The policy islands pattern (documented in the article provided) is the architect
 | Policy islands pattern for all agents | Eliminates approval fatigue; permissions declared once upfront | — Pending |
 
 ---
-*Last updated: 2026-03-19 after initialization*
+*Last updated: 2026-03-20 — Phase 03 complete*
