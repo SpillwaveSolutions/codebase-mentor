@@ -1,0 +1,25 @@
+# agent-rulez-sample.yaml
+# TEMPLATE — do not deploy directly.
+# Deployed to: {resolved_storage}/agent-rulez.yaml by /codebase-wizard-setup
+# setup.sh substitutes {resolved_storage} with the actual resolved storage path.
+#
+# Variable reference (Agent Rulez native interpolation):
+#   {date} → YYYY-MM-DD at hook invocation time
+#   {repo} → basename of the current working directory
+#
+# If Agent Rulez does not support {date}/{repo} natively, setup.sh
+# pre-computes them and writes static values into the deployed YAML.
+
+hooks:
+  - event: PostToolUse
+    action: append
+    target: "{resolved_storage}/sessions/{date}-{repo}.json"
+    format: json
+    on_error: warn
+    # on_error: warn — capture failures notify the user but do not abort
+    # the session. The wizard maintains an in-memory buffer and offers to
+    # flush it at session end if hooks failed.
+
+  - event: Stop
+    action: notify
+    message: "Session ended. Run /codebase-wizard-export to generate docs."
