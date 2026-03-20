@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-codebase-mentor"
+version = "1.0.0"
+description = "Wizard-style codebase exploration and documentation. Install the Codebase Wizard plugin for Claude Code (and other runtimes in future releases)."
+requires-python = ">=3.9"
+license = {text = "MIT"}
+keywords = ["codebase", "documentation", "ai", "claude"]
+dependencies = ["click>=8.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+ai-codebase-mentor = "ai_codebase_mentor.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ai_codebase_mentor*"]
+
+[tool.setuptools.package-data]
+"ai_codebase_mentor" = ["plugin/**/*", "plugin/**/.claude-plugin/*"]

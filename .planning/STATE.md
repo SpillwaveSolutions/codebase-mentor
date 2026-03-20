@@ -3,27 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-20T00:49:00.535Z"
+last_updated: "2026-03-20T02:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 03 (permission-agents-commands) — COMPLETE
-Plan: 1 of 1 — COMPLETE
+Phase: 07 (github-actions-workflows) — COMPLETE
+**Milestone 1 (v1.0) COMPLETE**
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 03 — permission-agents-commands
+**Current focus:** Milestone 1 complete — next is Milestone 2 (v1.2: OpenCode + PyPI)
 
 ## Completed Work
 
@@ -42,6 +42,12 @@ Plan 02-01 tasks — all verified complete (2026-03-19):
 - [x] Task 2: Create plugin/setup/setup.sh (commit 33020ae)
 - [x] Task 3: Create plugin/commands/codebase-wizard-export.md (commit 2e5f050)
 - [x] Task 4: Create plugin/commands/codebase-wizard-setup.md (commit 2944372)
+
+Plan 04-01 tasks — all verified complete (2026-03-20):
+
+- [x] Task 1: Finalize plugins/codebase-wizard/.claude-plugin/plugin.json (12 fields, 3 commands, 2 agents, 3 skills)
+- [x] Task 2: Create plugins/codebase-wizard/.claude-plugin/marketplace.json (15 fields, entry points to plugin.json)
+- [x] Verification: plugin.json PASS, marketplace.json PASS, cross-file consistency PASS
 
 Plan 03-01 tasks — all verified complete (2026-03-20):
 
@@ -65,6 +71,9 @@ Plan 03-01 tasks — all verified complete (2026-03-20):
 - [Phase 03]: context:fork on /codebase-wizard required for policy island agent to take effect
 - [Phase 03]: exit 77 in install_codex is conventional "skip" signal, not an error; caught by install_all
 - [Phase 03]: install_codex writes AGENTS.md with permanent manual export instructions for Codex users
+- [Phase 04]: plugin.json is the install manifest (read programmatically by Phase 5 installer); marketplace.json is the discovery record (read by marketplace UI and Phase 6 CLI)
+- [Phase 04]: `runtime: "claude-code"` in plugin.json is consumed by Phase 6 Python CLI as the converter selector key
+- [Phase 04]: `entry: ".claude-plugin/plugin.json"` in marketplace.json is the canonical pointer from discovery record to install manifest
 
 ## Blockers
 

@@ -1,0 +1,53 @@
+name: Test Installer
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-installer:
+    name: Test on ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11"]
+      fail-fast: false
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package from source
+        run: pip install -e .
+
+      - name: Verify CLI entry point is available
+        run: ai-codebase-mentor --version
+
+      - name: Install codebase-wizard for Claude
+        run: ai-codebase-mentor install --for claude
+
+      - name: Verify plugin files exist
+        run: |
+          test -d "$HOME/.claude/plugins/codebase-wizard" \
+            || (echo "ERROR: plugin directory not found at $HOME/.claude/plugins/codebase-wizard" && exit 1)
+
+      - name: Check status (installed)
+        run: ai-codebase-mentor status
+
+      - name: Uninstall codebase-wizard for Claude
+        run: ai-codebase-mentor uninstall --for claude
+
+      - name: Verify plugin files removed
+        run: |
+          test ! -d "$HOME/.claude/plugins/codebase-wizard" \
+            || (echo "ERROR: plugin directory still present after uninstall" && exit 1)
+
+      - name: Check status (uninstalled)
+        run: ai-codebase-mentor status

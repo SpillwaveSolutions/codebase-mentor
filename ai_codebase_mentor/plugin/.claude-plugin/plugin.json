@@ -1,0 +1,31 @@
+{
+  "name": "codebase-wizard",
+  "version": "1.0.0",
+  "description": "Wizard-style codebase explainer and documentation generator. Accepts any codebase, spec, or markdown artifact and explains it through conversational Q&A — with code-block anchors, plain-English explanations, and follow-up predictions. Two modes: Describe (repo owner documents their codebase) and Explore (new developer gets a learning-order tour). Sessions auto-captured and synthesizable as CODEBASE.md or TOUR.md.",
+  "keywords": ["codebase", "documentation", "exploration", "wizard", "explain", "tour", "ai-codebase-mentor"],
+  "author": {
+    "name": "Spillwave Solutions",
+    "url": "https://github.com/SpillwaveSolutions"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/SpillwaveSolutions/codebase-mentor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpillwaveSolutions/codebase-mentor"
+  },
+  "runtime": "claude-code",
+  "commands": [
+    "commands/codebase-wizard.md",
+    "commands/codebase-wizard-export.md",
+    "commands/codebase-wizard-setup.md"
+  ],
+  "agents": [
+    "agents/codebase-wizard-agent.md",
+    "agents/codebase-wizard-setup-agent.md"
+  ],
+  "skills": [
+    "skills/explaining-codebase/SKILL.md",
+    "skills/configuring-codebase-wizard/SKILL.md",
+    "skills/exporting-conversation/SKILL.md"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "name": "codebase-wizard",
+  "display_name": "Codebase Wizard",
+  "version": "1.0.0",
+  "description": "Wizard-style codebase explainer and documentation generator. Accepts any codebase, spec, or markdown artifact and explains it through conversational Q&A — with code-block anchors, plain-English explanations, and follow-up predictions. Two modes: Describe (repo owner documents their codebase) and Explore (new developer gets a learning-order tour). Sessions auto-captured and synthesizable as CODEBASE.md or TOUR.md.",
+  "short_description": "Explore and document any codebase through conversational Q&A with auto-captured sessions.",
+  "keywords": ["codebase", "documentation", "exploration", "wizard", "explain", "tour", "ai-codebase-mentor"],
+  "tags": ["productivity", "documentation", "developer-tools", "code-exploration"],
+  "author": {
+    "name": "Spillwave Solutions",
+    "url": "https://github.com/SpillwaveSolutions"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/SpillwaveSolutions/codebase-mentor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SpillwaveSolutions/codebase-mentor"
+  },
+  "runtime": "claude-code",
+  "entry": ".claude-plugin/plugin.json",
+  "install": {
+    "method": "python-package",
+    "package": "ai-codebase-mentor",
+    "command": "ai-codebase-mentor install --for claude"
+  },
+  "commands": [
+    {
+      "name": "codebase-wizard",
+      "description": "Start a wizard session — explain, explore, or document any codebase or artifact."
+    },
+    {
+      "name": "codebase-wizard-setup",
+      "description": "One-time setup: install Agent Rulez hooks and write session-agent permissions."
+    },
+    {
+      "name": "codebase-wizard-export",
+      "description": "Synthesize captured session logs into CODEBASE.md, TOUR.md, or FILE-NOTES.md."
+    }
+  ]
+}

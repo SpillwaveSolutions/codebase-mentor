@@ -65,43 +65,49 @@ Plans:
 | 1. Core Wizard Skill | 1/1 | Complete | 2026-03-19 |
 | 2. Capture + Synthesis | 1/1 | Complete | 2026-03-20 |
 | 3. Permission Agents + Commands | 1/1 | Complete | 2026-03-20 |
+| 4. Plugin Manifest + Marketplace | 1/1 | Complete | 2026-03-20 |
+| 5. Claude Code Install/Uninstall | 2/2 | Complete | 2026-03-20 |
+| 6. Python Package (Claude-only) | 2/2 | Complete | 2026-03-20 |
+| 7. GitHub Actions Test Workflow | 1/1 | Complete | 2026-03-20 |
 
 ### Phase 4: Claude Code plugin manifest and marketplace listing
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Finalize the Claude Code plugin manifest (`plugin.json`) and create `marketplace.json` so the plugin has correct metadata for packaging, installation, and marketplace discovery. This is the metadata gate — no installer code, just valid manifest structure that Phase 5 (installer) and Phase 6 (Python package) consume verbatim.
+**Requirements**: MANIFEST-01 (plugin.json complete), MANIFEST-02 (marketplace.json created), MANIFEST-03 (metadata finalized and consistent)
 **Depends on:** Phase 3
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 4 to break down)
+- [x] 04-01-PLAN.md — Finalize plugin.json and create marketplace.json
 
 ### Phase 5: Local and global Claude Code plugin install and uninstall
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Implement the Claude Code runtime installer as a Python module (`ai_codebase_mentor/converters/claude.py`). Supports global install (`~/.claude/plugins/codebase-wizard/`) and per-project install (`./plugins/codebase-wizard/`). Supports clean uninstall. Implements the RuntimeInstaller base class interface from the design spec.
+**Requirements**: CLAUDE-INSTALL-01 (global install), CLAUDE-INSTALL-02 (project install), CLAUDE-INSTALL-03 (clean uninstall), CLAUDE-INSTALL-04 (status reporting)
 **Depends on:** Phase 4
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 5 to break down)
+- [x] 05-01-PLAN.md — Package skeleton and RuntimeInstaller base class (wave 1)
+- [x] 05-02-PLAN.md — ClaudeInstaller implementation with TDD test suite (wave 2)
 
 ### Phase 6: Python package for Claude Code installer (Claude-only, not on PyPI)
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Create the ai-codebase-mentor Python package structure: pyproject.toml, ai_codebase_mentor/ package with cli.py entry point, base.py RuntimeInstaller class, bundled plugin copy, and MANIFEST.in. Wire the Claude converter (Phase 5) to the CLI. Package is installable locally via pip install -e . but NOT published to PyPI in this phase.
+**Requirements**: PKG-01 (pyproject.toml with entry point), PKG-02 (RuntimeInstaller base class), PKG-03 (bundled plugin copy), PKG-04 (cli.py with four subcommands), PKG-05 (pip install -e . works)
 **Depends on:** Phase 5
-**Plans:** 0 plans
+**Plans:** 2 plans
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 6 to break down)
+- [x] 06-01-PLAN.md — Package scaffold: pyproject.toml, MANIFEST.in, __init__.py, converters/base.py, bundled plugin (wave 1)
+- [x] 06-02-PLAN.md — CLI wiring: cli.py with install/uninstall/status/version, wired to ClaudeInstaller (wave 2)
 
 ### Phase 7: GitHub Actions installer test workflow (no PyPI publish)
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Create the GitHub Actions workflow that installs `ai-codebase-mentor` from source and runs install/uninstall/status smoke tests against it on every push, gating Milestone 1 (v1.0). PyPI publish is explicitly excluded.
+**Requirements**: GH-ACTIONS-01 (workflow triggers on push), GH-ACTIONS-02 (matrix: ubuntu-latest + macos-latest, Python 3.11), GH-ACTIONS-03 (steps: install, verify files, status, uninstall, verify removed, status; no secrets)
 **Depends on:** Phase 6
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 7 to break down)
+- [x] 07-01-PLAN.md — GitHub Actions test-installer workflow (install/uninstall/status, no PyPI publish)
