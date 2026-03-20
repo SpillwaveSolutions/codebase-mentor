@@ -1,40 +1,48 @@
 #!/usr/bin/env bash
 # setup.sh — Codebase Wizard one-time setup
 # Run via /codebase-wizard-setup. Do not run manually unless debugging.
+# Usage: ./setup.sh [claude|opencode|gemini|codex|all]
+#   Default runtime is "claude" if no argument is provided.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SAMPLE_YAML="$SCRIPT_DIR/agent-rulez-sample.yaml"
 
-# ─────────────────────────────────────────────
-# Step 1: Resolve storage
-# ─────────────────────────────────────────────
-if [ -d ".code-wizard" ]; then
-  RESOLVED_STORAGE=".code-wizard"
-elif [ -d ".claude/code-wizard" ]; then
-  RESOLVED_STORAGE=".claude/code-wizard"
-else
-  echo "No wizard storage directory found."
-  echo "Where should Codebase Wizard store sessions and docs?"
-  echo "  1) .code-wizard/           (recommended)"
-  echo "  2) .claude/code-wizard/"
-  read -r -p "Choice [1/2]: " choice
-  case "$choice" in
-    2) RESOLVED_STORAGE=".claude/code-wizard" ;;
-    *) RESOLVED_STORAGE=".code-wizard" ;;
-  esac
-  mkdir -p "$RESOLVED_STORAGE/sessions" "$RESOLVED_STORAGE/docs"
-fi
-
-echo "Using storage: $RESOLVED_STORAGE"
+RUNTIME="${1:-claude}"
 
 # ─────────────────────────────────────────────
-# Step 2: Write config.json
+# Shared: Resolve storage
+# Called by all install functions that need wizard storage.
 # ─────────────────────────────────────────────
-CONFIG_FILE="$RESOLVED_STORAGE/config.json"
-CREATED_AT="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+resolve_storage() {
+  if [ -d ".code-wizard" ]; then
+    RESOLVED_STORAGE=".code-wizard"
+  elif [ -d ".claude/code-wizard" ]; then
+    RESOLVED_STORAGE=".claude/code-wizard"
+  else
+    echo "No wizard storage directory found."
+    echo "Where should Codebase Wizard store sessions and docs?"
+    echo "  1) .code-wizard/           (recommended)"
+    echo "  2) .claude/code-wizard/"
+    read -r -p "Choice [1/2]: " choice
+    case "$choice" in
+      2) RESOLVED_STORAGE=".claude/code-wizard" ;;
+      *) RESOLVED_STORAGE=".code-wizard" ;;
+    esac
+    mkdir -p "$RESOLVED_STORAGE/sessions" "$RESOLVED_STORAGE/docs"
+  fi
 
-cat > "$CONFIG_FILE" << EOF
+  echo "Using storage: $RESOLVED_STORAGE"
+}
+
+# ─────────────────────────────────────────────
+# Shared: Write config.json
+# ─────────────────────────────────────────────
+write_config() {
+  CONFIG_FILE="$RESOLVED_STORAGE/config.json"
+  CREATED_AT="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+  cat > "$CONFIG_FILE" << EOF
 {
   "version": 1,
   "resolved_storage": "$RESOLVED_STORAGE",
@@ -42,31 +50,36 @@ cat > "$CONFIG_FILE" << EOF
 }
 EOF
 
-echo "Wrote $CONFIG_FILE"
+  echo "Wrote $CONFIG_FILE"
+}
 
 # ─────────────────────────────────────────────
-# Step 3: Install Agent Rulez
+# Shared: Deploy Agent Rulez hooks
+# Used by claude, opencode, and gemini installs.
 # ─────────────────────────────────────────────
-echo "Installing Agent Rulez..."
-rulez install
+deploy_hooks() {
+  echo "Installing Agent Rulez..."
+  rulez install
+
+  DEPLOYED_YAML="$RESOLVED_STORAGE/agent-rulez.yaml"
+  sed "s|{resolved_storage}|$RESOLVED_STORAGE|g" "$SAMPLE_YAML" > "$DEPLOYED_YAML"
+  echo "Deployed hook config: $DEPLOYED_YAML"
+
+  rulez hook add --config "$DEPLOYED_YAML"
+  echo "Registered Agent Rulez hooks from $DEPLOYED_YAML"
+}
 
 # ─────────────────────────────────────────────
-# Step 4: Deploy agent-rulez.yaml with substituted path
+# install_claude — Claude Code (default)
 # ─────────────────────────────────────────────
-DEPLOYED_YAML="$RESOLVED_STORAGE/agent-rulez.yaml"
-sed "s|{resolved_storage}|$RESOLVED_STORAGE|g" "$SAMPLE_YAML" > "$DEPLOYED_YAML"
-echo "Deployed hook config: $DEPLOYED_YAML"
+install_claude() {
+  echo "Installing for Claude Code..."
 
-# ─────────────────────────────────────────────
-# Step 5: Register hook with Agent Rulez
-# ─────────────────────────────────────────────
-rulez hook add --config "$DEPLOYED_YAML"
-echo "Registered Agent Rulez hooks from $DEPLOYED_YAML"
+  resolve_storage
+  write_config
+  deploy_hooks
 
-# ─────────────────────────────────────────────
-# Step 6: Write settings.local.json
-# ─────────────────────────────────────────────
-cat > settings.local.json << EOF
+  cat > settings.local.json << EOF
 {
   "permissions": {
     "allow": [
@@ -79,6 +92,150 @@ cat > settings.local.json << EOF
 }
 EOF
 
-echo "Wrote settings.local.json with scoped permissions"
-echo ""
-echo "Setup complete. Run /codebase-wizard to start your first session."
+  echo "Wrote settings.local.json with scoped permissions"
+  echo ""
+  echo "Setup complete. Run /codebase-wizard to start your first session."
+}
+
+# ─────────────────────────────────────────────
+# install_opencode — OpenCode
+# OpenCode uses lowercase tool names and flat command names.
+# Tool names differ from Claude Code PascalCase — see references/codex-tools.md.
+# ─────────────────────────────────────────────
+install_opencode() {
+  echo "Installing for OpenCode..."
+
+  resolve_storage
+  write_config
+  deploy_hooks
+
+  echo ""
+  echo "OpenCode setup complete."
+  echo "Tool names use lowercase conventions (read, write, bash, grep, glob)."
+  echo "See plugin/references/codex-tools.md for the full name mapping."
+  echo "Run /codebase-wizard to start your first session."
+}
+
+# ─────────────────────────────────────────────
+# install_gemini — Gemini CLI
+# Gemini uses snake_case tool names and TOML command format.
+# Tool names differ from Claude Code PascalCase — see references/codex-tools.md.
+# ─────────────────────────────────────────────
+install_gemini() {
+  echo "Installing for Gemini CLI..."
+
+  resolve_storage
+  write_config
+  deploy_hooks
+
+  echo ""
+  echo "Gemini CLI setup complete."
+  echo "Tool names use snake_case conventions (read_file, write_file, run_shell_command)."
+  echo "See plugin/references/codex-tools.md for the full name mapping."
+  echo "Commands are configured via TOML format in ~/.gemini/."
+  echo "Run the codebase-wizard TOML command to start your first session."
+}
+
+# ─────────────────────────────────────────────
+# install_codex — Codex
+# Codex has no hook mechanism. Hook setup is intentionally skipped.
+# Exit code 77 signals "skip" (not an error) for unsupported hook installation.
+# Users must run /codebase-wizard-export manually after each session.
+# ─────────────────────────────────────────────
+install_codex() {
+  echo "Installing for Codex..."
+
+  resolve_storage
+  write_config
+
+  cat > AGENTS.md << EOF
+# Codebase Wizard — Codex Instructions
+
+The Codebase Wizard is installed and ready to use.
+
+## Starting a session
+
+Run one of the following commands to start a wizard session:
+
+    /codebase-wizard --describe   # Document your codebase
+    /codebase-wizard --explore    # Tour as a new developer
+    /codebase-wizard --file <path>  # Explain a specific file
+
+## IMPORTANT: Manual export required
+
+Codex does not support automatic session capture hooks. After each session,
+you must manually export your session to generate documentation:
+
+    /codebase-wizard-export --latest
+
+This generates SESSION-TRANSCRIPT.md and the mode-specific doc
+(CODEBASE.md, TOUR.md, or FILE-NOTES.md) in:
+
+    ${RESOLVED_STORAGE}/docs/{session_id}/
+
+Without running this command, your session content will not be saved to disk.
+
+## Tool name mapping
+
+Codex uses different tool names than Claude Code. See:
+    plugin/references/codex-tools.md
+EOF
+
+  echo "Wrote AGENTS.md with Codex-specific instructions"
+  echo ""
+  echo "NOTE: Codex does not support hooks. Skipping Agent Rulez hook installation."
+  echo "Users must run /codebase-wizard-export manually after each session."
+  echo ""
+  echo "Codex setup complete (hook installation skipped — exit 77)."
+  exit 77
+}
+
+# ─────────────────────────────────────────────
+# install_all — All platforms
+# Runs claude, opencode, and gemini installs.
+# Catches exit 77 from codex (skip signal) without failing the overall install.
+# ─────────────────────────────────────────────
+install_all() {
+  echo "Installing for all platforms..."
+  echo ""
+
+  install_claude
+  echo ""
+
+  install_opencode
+  echo ""
+
+  install_gemini
+  echo ""
+
+  # Codex exits with code 77 (skip — no hook support).
+  # Catch it here so install_all does not fail overall.
+  install_codex || {
+    exit_code=$?
+    if [ "$exit_code" -eq 77 ]; then
+      echo "Codex: hook installation skipped (exit 77 — no hook support). Continuing."
+    else
+      echo "Codex install failed with exit code $exit_code. Aborting."
+      exit "$exit_code"
+    fi
+  }
+
+  echo ""
+  echo "All platforms installed successfully."
+}
+
+# ─────────────────────────────────────────────
+# Platform dispatch
+# ─────────────────────────────────────────────
+case "$RUNTIME" in
+  claude)   install_claude   ;;
+  opencode) install_opencode ;;
+  gemini)   install_gemini   ;;
+  codex)    install_codex    ;;
+  all)      install_all      ;;
+  *)
+    echo "Unknown runtime: $RUNTIME"
+    echo "Usage: ./setup.sh [claude|opencode|gemini|codex|all]"
+    exit 1
+    ;;
+esac
