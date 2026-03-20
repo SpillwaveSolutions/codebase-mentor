@@ -2,7 +2,11 @@
 
 ## Overview
 
-Build a Claude Code skill + plugin that transforms codebases into well-documented knowledge bases through a wizard-style Q&A interface, with two modes (Describe/Explore), auto-captured sessions, on-demand synthesis, and pre-authorized agents for zero-approval execution.
+Build a Claude Code skill + plugin that transforms codebases into well-documented knowledge bases through a wizard-style Q&A interface, with two modes (Describe/Explore), auto-captured sessions, on-demand synthesis, and pre-authorized agents for zero-approval execution. Delivered as a multi-runtime Python package (`ai-codebase-mentor`) with per-runtime converters that transform the Claude Code plugin format into OpenCode, Codex, and Gemini formats on install.
+
+**Milestone roadmap:** v1.0 (Claude Code) → v1.2 (OpenCode + PyPI) → v1.3 (Codex subagents) → v1.4 (Gemini) → v1.5 (LangChain DeepAgent standalone)
+
+**Design spec:** `docs/superpowers/specs/2026-03-20-codebase-wizard-multi-runtime-design.md`
 
 ## Phases
 
@@ -61,3 +65,43 @@ Plans:
 | 1. Core Wizard Skill | 1/1 | Complete | 2026-03-19 |
 | 2. Capture + Synthesis | 1/1 | Complete | 2026-03-20 |
 | 3. Permission Agents + Commands | 1/1 | Complete | 2026-03-20 |
+
+### Phase 4: Claude Code plugin manifest and marketplace listing
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 3
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 4 to break down)
+
+### Phase 5: Local and global Claude Code plugin install and uninstall
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 4
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 5 to break down)
+
+### Phase 6: Python package for Claude Code installer (Claude-only, not on PyPI)
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 5
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 6 to break down)
+
+### Phase 7: GitHub Actions installer test workflow (no PyPI publish)
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 6
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 7 to break down)

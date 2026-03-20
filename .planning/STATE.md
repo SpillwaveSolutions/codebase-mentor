@@ -70,6 +70,17 @@ Plan 03-01 tasks — all verified complete (2026-03-20):
 
 None currently.
 
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 4 added: Claude Code plugin manifest and marketplace listing
+- Phase 5 added: Local and global Claude Code plugin install and uninstall
+- Phase 6 added: Python package for Claude Code installer (Claude-only, not on PyPI) — scope narrowed from "all runtimes + PyPI" per multi-runtime design
+- Phase 7 added: GitHub Actions installer test workflow (no PyPI publish) — PyPI publish deferred to v1.2
+- Multi-runtime design approved 2026-03-20: Approach A (monorepo + converters), milestones v1.0→v1.5
+- Spec: docs/superpowers/specs/2026-03-20-codebase-wizard-multi-runtime-design.md
+
 ## Notes
 
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
