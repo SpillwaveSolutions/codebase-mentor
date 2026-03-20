@@ -60,5 +60,5 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Core Wizard Skill | 0/1 | In progress | - |
-| 2. Capture + Synthesis | 1/1 | Complete   | 2026-03-20 |
+| 2. Capture + Synthesis | 1/1 | Complete    | 2026-03-20 |
 | 3. Permission Agents + Commands | 0/2 | Not started | - |
