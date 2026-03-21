@@ -13,6 +13,12 @@ Build a Claude Code skill + plugin that transforms codebases into well-documente
 - [x] **Phase 1: Core Wizard Skill** - Answer loop, Describe/Explore modes, File mode, question banks (completed 2026-03-19)
 - [x] **Phase 2: Capture + Synthesis** - Agent Rulez hooks, JSON capture, /export command, synthesis pipeline (completed 2026-03-20)
 - [x] **Phase 3: Permission Agents + Commands** - Policy island agents, /codebase-wizard command, multi-platform codex-tools (completed 2026-03-20)
+- [x] **Phase 4: Plugin Manifest + Marketplace** - plugin.json and marketplace.json finalized (completed 2026-03-20)
+- [x] **Phase 5: Claude Code Install/Uninstall** - claude.py converter, global + project install, clean uninstall (completed 2026-03-20)
+- [x] **Phase 6: Python Package (Claude-only)** - pyproject.toml, cli.py, bundled plugin, pip install -e . (completed 2026-03-20)
+- [x] **Phase 7: GitHub Actions Test Workflow** - test-installer.yml, smoke tests on push, no PyPI publish (completed 2026-03-20)
+- [ ] **Phase 8: OpenCode Converter** - opencode.py converter, agent/command format conversion, TDD test suite, CLI wiring
+- [ ] **Phase 9: PyPI Publish** - pyproject.toml metadata completeness, publish-pypi.yml workflow, Trusted Publishers OIDC
 
 ## Phase Details
 
@@ -69,6 +75,8 @@ Plans:
 | 5. Claude Code Install/Uninstall | 2/2 | Complete | 2026-03-20 |
 | 6. Python Package (Claude-only) | 2/2 | Complete | 2026-03-20 |
 | 7. GitHub Actions Test Workflow | 1/1 | Complete | 2026-03-20 |
+| 8. OpenCode Converter | 0/2 | Not started | - |
+| 9. PyPI Publish | 0/1 | Not started | - |
 
 ### Phase 4: Claude Code plugin manifest and marketplace listing
 
@@ -111,3 +119,42 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md — GitHub Actions test-installer workflow (install/uninstall/status, no PyPI publish)
+
+### Phase 8: OpenCode Converter
+
+**Goal:** Implement `ai_codebase_mentor/converters/opencode.py` — the install-time converter that reads the bundled Claude plugin source and generates OpenCode-native files at `~/.config/opencode/codebase-wizard/` (global) or `./.opencode/codebase-wizard/` (project). Wire the converter into the CLI alongside the existing Claude installer.
+**Depends on:** Phase 7
+**Requirements**: OPENCODE-01, OPENCODE-02, OPENCODE-03, OPENCODE-04, OPENCODE-05, OPENCODE-06, OPENCODE-07, OPENCODE-08, OPENCODE-09, OPENCODE-10, OPENCODE-11, OPENCODE-12, OPENCODE-13
+**Success Criteria** (what must be TRUE):
+  1. `ai-codebase-mentor install --for opencode` writes converted agent, command, and skill files to `~/.config/opencode/codebase-wizard/` with no manual steps
+  2. Agent files in the output directory use `tools:` (lowercase object) instead of `allowed_tools:` (PascalCase array), with `AskUserQuestion` mapped to `question` and the other four special mappings applied
+  3. Agent frontmatter has `name:` field removed and named colors converted to hex values
+  4. Output directory contains a `command/` directory (singular) rather than `commands/`, with all three command files present and `~/.claude` paths rewritten to `~/.config/opencode`
+  5. `opencode.json` is written (or merged) in the install directory pre-authorizing file access so no per-file permission prompts appear during wizard sessions
+  6. `ai-codebase-mentor uninstall --for opencode` removes the install directory cleanly; a second uninstall is a no-op
+  7. `ai-codebase-mentor status` reports OpenCode install state alongside Claude install state
+  8. `ai-codebase-mentor install --for all` includes OpenCode in the runtime iteration
+  9. All 13 test cases in `tests/test_opencode_installer.py` pass
+**Plans**: 2 plans
+
+Plans:
+- [ ] 08-01: OpenCode converter implementation with TDD (opencode.py + tests/test_opencode_installer.py)
+- [ ] 08-02: Wire OpenCode converter into CLI — `--for opencode`, `--for all`, status reporting
+
+### Phase 9: PyPI Publish
+
+**Goal:** Finalize `pyproject.toml` metadata so the PyPI listing is complete, bump version to `1.2.0`, and create `.github/workflows/publish-pypi.yml` — a GitHub Actions workflow that publishes to PyPI on semver tag push using Trusted Publishers (OIDC), with no `PYPI_TOKEN` secret required.
+**Depends on:** Phase 8
+**Requirements**: PYPI-01, PYPI-02, PYPI-03, PYPI-04, PYPI-05, PYPI-06, PYPI-07
+**Success Criteria** (what must be TRUE):
+  1. Pushing a `v1.2.0` tag triggers `publish-pypi.yml` and no other workflow
+  2. The workflow authenticates to PyPI via OIDC (no `PYPI_TOKEN` secret in the repo)
+  3. The workflow builds an sdist and wheel via `python -m build` and uploads both via `pypa/gh-action-pypi-publish`
+  4. `pyproject.toml` contains `authors`, `readme`, `classifiers`, and `[project.urls]` (Homepage + Repository); `version` is `1.2.0`
+  5. Version in `pyproject.toml` matches `__version__` in `ai_codebase_mentor/__init__.py`
+  6. After publish, `pip install ai-codebase-mentor` installs from PyPI and `ai-codebase-mentor --version` outputs `1.2.0`
+  7. `publish-pypi.yml` contains no test steps — testing remains the responsibility of `test-installer.yml`
+**Plans**: 1 plan
+
+Plans:
+- [ ] 09-01: pyproject.toml metadata + publish-pypi.yml workflow (version bump to 1.2.0, OIDC publish)
