@@ -1,8 +1,18 @@
 # Codebase Wizard
 
+## Current Milestone: v1.2 — OpenCode + PyPI
+
+**Goal:** Expand the `ai-codebase-mentor` Python package to support OpenCode (via a new `opencode.py` converter) and publish the package to PyPI on semver tag via a GitHub Actions publish workflow.
+
+**Target features:**
+- `opencode.py` — converts Claude Code plugin format (agents, commands) to OpenCode native format
+- `ai-codebase-mentor install --for opencode` works end-to-end with clean install/uninstall
+- `publish-pypi.yml` — GitHub Actions workflow that publishes to PyPI on semver tag push
+- `pip install ai-codebase-mentor` works from PyPI
+
 ## What This Is
 
-A Claude Code skill + plugin that transforms codebases into well-documented knowledge bases through a wizard-style Q&A interface. It has two modes: **Describe** (repo owner documents their codebase) and **Explore** (new developer gets an interactive tour). All conversations are auto-captured as raw JSON/YAML and synthesized on-demand into a human-readable transcript and a structured CODEBASE.md. Ships with pre-authorized agents (policy islands) that eliminate the "May I?" approval loop entirely.
+A multi-runtime AI plugin and Python package that transforms codebases into well-documented knowledge bases through a wizard-style Q&A interface. The plugin runs in Claude Code, OpenCode, Codex, Gemini, and LangChain DeepAgent. The `ai-codebase-mentor` Python package installs the correct format for each runtime via per-runtime converters.
 
 ## Core Value
 
@@ -56,7 +66,7 @@ The policy islands pattern (documented in the article provided) is the architect
 
 ## Constraints
 
-- **Platform**: Claude Code CLI only — no other runtimes
+- **Platform**: Claude Code (v1.0 ✓), OpenCode (v1.2), Codex (v1.3), Gemini (v1.4), LangChain DeepAgent (v1.5)
 - **Storage**: Local filesystem only (`.claude/code-wizard/` or `.code-wizard/`)
 - **Hook infrastructure**: Agent Rulez must be installable without elevated permissions
 - **Agent Rulez**: Hooks declared in YAML, not hardcoded in settings.json
@@ -71,5 +81,10 @@ The policy islands pattern (documented in the article provided) is the architect
 | Agent Rulez for hooks instead of hardcoded hooks | Declarative YAML config is portable and auditable | — Pending |
 | Policy islands pattern for all agents | Eliminates approval fatigue; permissions declared once upfront | — Pending |
 
+| Approach A (monorepo + converters) | Claude format is canonical; converters generate runtime-specific artifacts on install — no duplication | ✓ Good — shipping v1.0 |
+| Separate plugin.json and marketplace.json | install manifest stays clean; marketplace server adds discovery metadata separately | ✓ Good |
+| `runtime: "claude-code"` in plugin.json | converter selector key consumed by CLI to dispatch correct RuntimeInstaller subclass | ✓ Good |
+| Lazy import in `_get_converters()` | adding new runtimes requires only adding to the dict — no CLI structural change | ✓ Good |
+
 ---
-*Last updated: 2026-03-20 — Phase 03 complete*
+*Last updated: 2026-03-21 — v1.0 complete, v1.2 started*

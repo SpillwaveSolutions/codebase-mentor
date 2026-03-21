@@ -3,27 +3,31 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-20T02:00:00.000Z"
+last_updated: "2026-03-21T00:00:00.000Z"
+milestone: v1.2
+milestone_name: opencode-pypi
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 10
-  completed_plans: 10
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 07 (github-actions-workflows) — COMPLETE
-**Milestone 1 (v1.0) COMPLETE**
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-21 — Milestone v1.2 started
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-19)
+See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Milestone 1 complete — next is Milestone 2 (v1.2: OpenCode + PyPI)
+**Current focus:** Milestone v1.2 — OpenCode converter + PyPI publish
 
 ## Completed Work
 
