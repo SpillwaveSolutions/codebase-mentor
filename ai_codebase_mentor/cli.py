@@ -22,7 +22,7 @@ def main():
 
 @main.command()
 @click.option("--for", "runtime", required=True,
-              help="Target runtime: claude, all")
+              help="Target runtime: claude, opencode, all")
 @click.option("--project", is_flag=True, default=False,
               help="Install per-project (./plugins/) instead of global (~/.claude/plugins/).")
 def install(runtime, project):
@@ -45,7 +45,7 @@ def install(runtime, project):
 
 @main.command()
 @click.option("--for", "runtime", required=True,
-              help="Target runtime: claude, all")
+              help="Target runtime: claude, opencode, all")
 @click.option("--project", is_flag=True, default=False,
               help="Uninstall per-project install instead of global.")
 def uninstall(runtime, project):
