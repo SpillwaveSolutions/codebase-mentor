@@ -1,31 +1,29 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: opencode-pypi
-status: roadmap-ready
-last_updated: "2026-03-21T00:00:00.000Z"
+milestone: v1.0
+milestone_name: milestone
+status: unknown
+last_updated: "2026-03-22T03:25:14.831Z"
 progress:
-  total_phases: 2
-  completed_phases: 0
-  total_plans: 3
-  completed_plans: 0
+  total_phases: 9
+  completed_phases: 7
+  total_plans: 11
+  completed_plans: 10
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: Phase 8 (not started — roadmap defined, ready for planning)
-Plan: —
-Status: Roadmap ready — Phase 8 and Phase 9 defined
-Last activity: 2026-03-21 — Milestone v1.2 roadmap created
+Phase: 08 (opencode-converter) — EXECUTING
+Plan: 2 of 2 (plan 01 complete 2026-03-22)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Milestone v1.2 — OpenCode converter + PyPI publish
+**Current focus:** Phase 08 — opencode-converter
 
 ## Completed Work (v1.0)
 
@@ -59,6 +57,13 @@ Plan 03-01 tasks — all verified complete (2026-03-20):
 - [x] Task 4: Extend plugin/setup/setup.sh with platform detection (commit 8d7382e)
 - [x] Task 5: End-to-End Verification — all 7 invariants PASS
 
+Plan 08-01 tasks — all verified complete (2026-03-22):
+
+- [x] Task 1 (RED): Write 13 failing tests in tests/test_opencode_installer.py (commit a6bbfad)
+- [x] Task 2 (GREEN): Implement OpenCodeInstaller in opencode.py — all 13 tests pass (commit 77fcf15)
+- [x] Task 3: Wire CLI _get_converters() to include opencode (commit 4f8fcd1)
+- [x] Verification: 13 OpenCode tests PASS, 9 Claude tests PASS (zero regressions)
+
 ## Decisions
 
 | Date | Decision | Rationale |
@@ -82,6 +87,7 @@ Plan 03-01 tasks — all verified complete (2026-03-20):
 - [Phase 08]: Path-scoped tools (e.g., `Write(.code-wizard/**)`) stripped of scope annotation in agent conversion; path scope handled via opencode.json permissions (OPENCODE-06)
 - [Phase 08]: JSONC not supported for opencode.json — use standard JSON; warn if parse fails (per v1.2 out-of-scope list)
 - [Phase 09]: No TestPyPI staging — publish goes directly to PyPI (per v1.2 out-of-scope list)
+- [Phase 08-opencode-converter]: YAML frontmatter parsed line-by-line with block scalar state tracking — no YAML library needed
 
 ## Blockers
 
@@ -106,6 +112,6 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last executed: 07-01-PLAN.md (2026-03-20) — v1.0 complete
+- Last executed: 08-01-PLAN.md (2026-03-22) — OpenCodeInstaller TDD complete
 - v1.2 phase directories: .planning/phases/08-opencode-converter/, .planning/phases/09-pypi-publish/
-- Next: plan-phase 8 (08-01 OpenCode converter TDD)
+- Next: plan-phase 8 (08-02 — if exists) or 09-01 (PyPI publish)

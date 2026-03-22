@@ -75,7 +75,7 @@ Plans:
 | 5. Claude Code Install/Uninstall | 2/2 | Complete | 2026-03-20 |
 | 6. Python Package (Claude-only) | 2/2 | Complete | 2026-03-20 |
 | 7. GitHub Actions Test Workflow | 1/1 | Complete | 2026-03-20 |
-| 8. OpenCode Converter | 0/2 | Not started | - |
+| 8. OpenCode Converter | 1/2 | In Progress|  |
 | 9. PyPI Publish | 0/1 | Not started | - |
 
 ### Phase 4: Claude Code plugin manifest and marketplace listing
