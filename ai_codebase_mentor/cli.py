@@ -10,7 +10,8 @@ from ai_codebase_mentor import __version__
 def _get_converters():
     """Lazy import converters to avoid import errors if optional deps missing."""
     from ai_codebase_mentor.converters.claude import ClaudeInstaller
-    return {"claude": ClaudeInstaller}
+    from ai_codebase_mentor.converters.opencode import OpenCodeInstaller
+    return {"claude": ClaudeInstaller, "opencode": OpenCodeInstaller}
 
 
 @click.group()
