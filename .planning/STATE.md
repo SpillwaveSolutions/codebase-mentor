@@ -3,28 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-22T04:23:07.359Z"
+last_updated: "2026-03-22T14:46:32.689Z"
 progress:
   total_phases: 9
-  completed_phases: 8
-  total_plans: 11
-  completed_plans: 11
+  completed_phases: 9
+  total_plans: 12
+  completed_plans: 12
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 08 (opencode-converter) — COMPLETE (2026-03-22)
-Phase: 09 (pypi-publish) — NEXT
-Plan: 08-02 complete 2026-03-22 — all 11 v1.2 plans complete
+Phase: 09 (pypi-publish) — EXECUTING
+Plan: 1 of 1
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 08 — opencode-converter
+**Current focus:** Phase 09 — pypi-publish
 
 ## Completed Work (v1.0)
 
@@ -96,6 +95,8 @@ Plan 08-02 tasks — all verified complete (2026-03-22):
 - [Phase 09]: No TestPyPI staging — publish goes directly to PyPI (per v1.2 out-of-scope list)
 - [Phase 08-opencode-converter]: YAML frontmatter parsed line-by-line with block scalar state tracking — no YAML library needed
 - [Phase 08-opencode-converter]: 08-01 Task 3 pre-completed _get_converters() wiring; 08-02 updated --for help text only
+- [Phase 09-pypi-publish]: PyPI publish uses Trusted Publishers OIDC — no PYPI_TOKEN secret needed; publisher configured once on pypi.org
+- [Phase 09-pypi-publish]: Publish workflow fires on semver tag push only — test-installer.yml owns all testing; publish-pypi.yml has zero test steps
 
 ## Blockers
 
