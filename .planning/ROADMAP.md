@@ -17,7 +17,7 @@ Build a Claude Code skill + plugin that transforms codebases into well-documente
 - [x] **Phase 5: Claude Code Install/Uninstall** - claude.py converter, global + project install, clean uninstall (completed 2026-03-20)
 - [x] **Phase 6: Python Package (Claude-only)** - pyproject.toml, cli.py, bundled plugin, pip install -e . (completed 2026-03-20)
 - [x] **Phase 7: GitHub Actions Test Workflow** - test-installer.yml, smoke tests on push, no PyPI publish (completed 2026-03-20)
-- [ ] **Phase 8: OpenCode Converter** - opencode.py converter, agent/command format conversion, TDD test suite, CLI wiring
+- [x] **Phase 8: OpenCode Converter** - opencode.py converter, agent/command format conversion, TDD test suite, CLI wiring (completed 2026-03-22)
 - [ ] **Phase 9: PyPI Publish** - pyproject.toml metadata completeness, publish-pypi.yml workflow, Trusted Publishers OIDC
 
 ## Phase Details
@@ -75,7 +75,7 @@ Plans:
 | 5. Claude Code Install/Uninstall | 2/2 | Complete | 2026-03-20 |
 | 6. Python Package (Claude-only) | 2/2 | Complete | 2026-03-20 |
 | 7. GitHub Actions Test Workflow | 1/1 | Complete | 2026-03-20 |
-| 8. OpenCode Converter | 1/2 | In Progress|  |
+| 8. OpenCode Converter | 2/2 | Complete   | 2026-03-22 |
 | 9. PyPI Publish | 0/1 | Not started | - |
 
 ### Phase 4: Claude Code plugin manifest and marketplace listing

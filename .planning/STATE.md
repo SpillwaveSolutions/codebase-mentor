@@ -3,20 +3,21 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-22T03:25:14.831Z"
+last_updated: "2026-03-22T03:28:38.961Z"
 progress:
   total_phases: 9
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 11
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 08 (opencode-converter) — EXECUTING
-Plan: 2 of 2 (plan 01 complete 2026-03-22)
+Phase: 08 (opencode-converter) — COMPLETE (2026-03-22)
+Phase: 09 (pypi-publish) — NEXT
+Plan: 08-02 complete 2026-03-22 — all 11 v1.2 plans complete
 
 ## Project Reference
 
@@ -64,6 +65,12 @@ Plan 08-01 tasks — all verified complete (2026-03-22):
 - [x] Task 3: Wire CLI _get_converters() to include opencode (commit 4f8fcd1)
 - [x] Verification: 13 OpenCode tests PASS, 9 Claude tests PASS (zero regressions)
 
+Plan 08-02 tasks — all verified complete (2026-03-22):
+
+- [x] Task 1: Update --for help text to include opencode in install/uninstall (commit b245dbe)
+- [x] Task 2: Verify status command shows opencode alongside claude (no code change needed)
+- [x] Task 3: Full test suite — 22 passed, 0 failures (22 = 13 OpenCode + 9 Claude)
+
 ## Decisions
 
 | Date | Decision | Rationale |
@@ -88,6 +95,7 @@ Plan 08-01 tasks — all verified complete (2026-03-22):
 - [Phase 08]: JSONC not supported for opencode.json — use standard JSON; warn if parse fails (per v1.2 out-of-scope list)
 - [Phase 09]: No TestPyPI staging — publish goes directly to PyPI (per v1.2 out-of-scope list)
 - [Phase 08-opencode-converter]: YAML frontmatter parsed line-by-line with block scalar state tracking — no YAML library needed
+- [Phase 08-opencode-converter]: 08-01 Task 3 pre-completed _get_converters() wiring; 08-02 updated --for help text only
 
 ## Blockers
 
