@@ -181,6 +181,34 @@ def test_command_directory_singular(installer, source_plugin_dir, tmp_path):
     )
 
 
+def test_subagent_type_normalized(installer, source_plugin_dir, tmp_path):
+    """subagent_type: "general-purpose" is converted to "general" in output."""
+    temp_source = tmp_path / "plugin-subagent"
+    shutil.copytree(source_plugin_dir, temp_source)
+
+    test_agent = temp_source / "agents" / "codebase-wizard-agent.md"
+    original = test_agent.read_text()
+    # Inject subagent_type field into frontmatter
+    modified = original.replace(
+        "name: codebase-wizard-agent",
+        'name: codebase-wizard-agent\nsubagent_type: "general-purpose"',
+    )
+    test_agent.write_text(modified)
+
+    installer.install(temp_source, "global")
+    agent_out = (
+        tmp_path / "home" / ".config" / "opencode" / "codebase-wizard"
+        / "agents" / "codebase-wizard-agent.md"
+    )
+    content = agent_out.read_text()
+    assert 'subagent_type: "general"' in content, (
+        f"Expected subagent_type normalized to 'general'. Content:\n{content[:500]}"
+    )
+    assert "general-purpose" not in content, (
+        "subagent_type 'general-purpose' should have been converted to 'general'"
+    )
+
+
 def test_install_raises_on_missing_source(installer):
     """install() raises RuntimeError with 'not found' message for missing source."""
     with pytest.raises(RuntimeError, match="not found"):

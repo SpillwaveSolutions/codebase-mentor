@@ -152,6 +152,10 @@ def _convert_agent_frontmatter(content: str) -> str:
             if re.match(r'^name:', line):
                 continue
 
+            # Normalize subagent_type: "general-purpose" -> "general"
+            if re.match(r'^subagent_type:', line):
+                line = re.sub(r'"?general-purpose"?', '"general"', line)
+
             # Start of allowed_tools: block — skip the key line and enter block mode
             if re.match(r'^allowed_tools:', line):
                 in_allowed_tools = True
