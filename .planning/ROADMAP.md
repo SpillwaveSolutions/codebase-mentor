@@ -158,3 +158,23 @@ Plans:
 
 Plans:
 - [x] 09-01: pyproject.toml metadata + publish-pypi.yml workflow (version bump to 1.2.0, OIDC publish)
+
+### Phase 10: Fix Agent Rulez config and add session capture
+
+**Goal:** Rewrite agent-rulez-sample.yaml with correct rules: schema (block rules + run: capture-session rule), fix setup.sh (replace rulez hook add with rulez install, deploy capture-session.sh), create capture-session.sh that reads PostToolUse JSON from stdin and appends to .code-wizard/sessions/{session_id}.json, add Write-tool fallback session capture instruction to SKILL.md Answer Loop.
+**Requirements**: RULEZ-01 (correct YAML schema with rules: key), RULEZ-02 (setup.sh uses rulez install and deploys capture script), RULEZ-03 (capture-session.sh reads PostToolUse stdin JSON), RULEZ-04 (SKILL.md Write-tool fallback for session capture)
+**Depends on:** Phase 9
+**Plans:** 1 plan
+
+Plans:
+- [ ] 10-01-PLAN.md — Fix agent-rulez-sample.yaml, setup.sh, create capture-session.sh, add SKILL.md Write fallback
+
+### Phase 11: Wizard UX improvements: numbered next-options, free-text fallback, and visual flow diagram option in explore mode
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 10
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 11 to break down)
