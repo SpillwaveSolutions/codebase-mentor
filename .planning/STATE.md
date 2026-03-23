@@ -3,27 +3,29 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-23T23:02:23.401Z"
+last_updated: "2026-03-23T23:07:24.861Z"
 progress:
   total_phases: 11
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 14
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 11 (Wizard UX improvements) — COMPLETE
-Plan: 1 of 1 — COMPLETE (2026-03-23)
+Phase: 10 (Fix Agent Rulez config and add session capture) — COMPLETE
+Plan: 1 of 1 — COMPLETE
+
+Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config fixed and session capture added
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 11 — Wizard UX improvements
+**Current focus:** Phase 10 — Fix Agent Rulez config and add session capture
 
 ## Completed Work (v1.0)
 
@@ -105,6 +107,7 @@ Plan 08-02 tasks — all verified complete (2026-03-22):
 - [Phase 09-pypi-publish]: Publish workflow fires on semver tag push only — test-installer.yml owns all testing; publish-pypi.yml has zero test steps
 - [Phase 11-wizard-ux-improvements]: Numbering applied at render time in SESSION-TRANSCRIPT template; next_options JSON array schema unchanged
 - [Phase 11-wizard-ux-improvements]: Visual Flow triggered by pipeline/orchestration/data flow/multi-step explanations; box-drawing chars (│ ▼ ├── └──) used for diagram format
+- [Phase 10-fix-agent-rulez-config-and-add-session-capture]: Agent Rulez uses rules: top-level key (not hooks:); rulez install is the correct activation command; capture-session.sh uses exported env vars for python3 to avoid shell interpolation hazards; Write-tool fallback in SKILL.md Step 6 for Agent Rulez-absent environments
 
 ## Blockers
 
@@ -143,10 +146,11 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-23 - Phase 11 complete: wizard Answer Loop now uses numbered options (1-5) + free-text escape hatch + Visual Flow option in all three Next blocks; SESSION-TRANSCRIPT export preserves numbered format
-- Last executed: 11-01-PLAN.md (2026-03-23) — Wizard UX improvements complete
+- Last activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
+- Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config and session capture complete
+- Phase 11 also complete (2026-03-23): wizard Answer Loop now uses numbered options (1-5) + free-text escape hatch + Visual Flow option in all three Next blocks; SESSION-TRANSCRIPT export preserves numbered format
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
-- All 11 phases complete; all 13 plans complete (Phase 11 Plan 01 done 2026-03-23)
+- All 11 phases complete; all 14 plans complete (Phase 10 Plan 01 done 2026-03-23)
 - v1.2.3 tagged and published to GitHub; plugin installed at ~/.claude/plugins/codebase-wizard/ with correct codebase-wizard@codebase-mentor registry entries; Claude Code restart required to load plugin
 - All 27 tests pass (14 OpenCode + 13 Claude)
 - Next: v1.3 milestone (Codex subagents) — begin with /gsd:plan-phase

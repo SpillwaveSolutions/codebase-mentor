@@ -164,7 +164,7 @@ Plans:
 **Goal:** Rewrite agent-rulez-sample.yaml with correct rules: schema (block rules + run: capture-session rule), fix setup.sh (replace rulez hook add with rulez install, deploy capture-session.sh), create capture-session.sh that reads PostToolUse JSON from stdin and appends to .code-wizard/sessions/{session_id}.json, add Write-tool fallback session capture instruction to SKILL.md Answer Loop.
 **Requirements**: RULEZ-01 (correct YAML schema with rules: key), RULEZ-02 (setup.sh uses rulez install and deploys capture script), RULEZ-03 (capture-session.sh reads PostToolUse stdin JSON), RULEZ-04 (SKILL.md Write-tool fallback for session capture)
 **Depends on:** Phase 9
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 10-01-PLAN.md — Fix agent-rulez-sample.yaml, setup.sh, create capture-session.sh, add SKILL.md Write fallback
