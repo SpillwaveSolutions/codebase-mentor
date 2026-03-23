@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "codebase-mentor",
+  "version": "1.2.2",
+  "description": "Marketplace for Codebase Wizard — wizard-style codebase exploration, documentation, and Q&A",
+  "owner": {
+    "name": "Spillwave Solutions",
+    "email": "hello@spillwave.io"
+  },
+  "plugins": [
+    {
+      "name": "codebase-wizard",
+      "description": "Explore and document any codebase through conversational Q&A with auto-captured sessions",
+      "version": "1.0.0",
+      "author": {
+        "name": "Spillwave Solutions",
+        "email": "hello@spillwave.io"
+      },
+      "source": "./plugins/codebase-wizard",
+      "category": "productivity"
+    }
+  ]
+}
