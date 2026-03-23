@@ -105,9 +105,9 @@ Format each turn as:
 → called by: {connections.called_by joined with newlines}
 
 **Next options explored:**
-- {next_options[0]}
-- {next_options[1]}
-- {next_options[2]}
+1. {next_options[0]}
+2. {next_options[1]}
+3. {next_options[2]}
 
 ---
 ```
