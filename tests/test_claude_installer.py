@@ -1,11 +1,12 @@
 """Tests for ClaudeInstaller — install, uninstall, status for Claude Code runtime."""
 
+import json
 import shutil
 from pathlib import Path
 
 import pytest
 
-from ai_codebase_mentor.converters.claude import ClaudeInstaller
+from ai_codebase_mentor.converters.claude import ClaudeInstaller, PLUGIN_REGISTRY_KEY
 
 # Path to the real plugin source (relative to project root)
 REAL_PLUGIN_SOURCE = Path(__file__).parent.parent / "plugins" / "codebase-wizard"
@@ -98,3 +99,58 @@ def test_install_raises_runtime_error_on_bad_source(installer):
     """install() raises RuntimeError with a human-readable message for missing source."""
     with pytest.raises(RuntimeError, match="not found"):
         installer.install(Path("/nonexistent/path/does/not/exist"), "global")
+
+
+def test_install_registers_in_installed_plugins_json(installer, source_plugin_dir, tmp_path):
+    """install() writes codebase-wizard@local entry to installed_plugins.json."""
+    installer.install(source_plugin_dir, "global")
+    registry_path = tmp_path / "home" / ".claude" / "plugins" / "installed_plugins.json"
+    assert registry_path.exists(), "installed_plugins.json not created"
+    data = json.loads(registry_path.read_text())
+    assert PLUGIN_REGISTRY_KEY in data["plugins"], (
+        f"'{PLUGIN_REGISTRY_KEY}' not found in installed_plugins.json"
+    )
+    entry = data["plugins"][PLUGIN_REGISTRY_KEY][0]
+    assert entry["scope"] == "user"
+    assert "installPath" in entry
+    assert entry["version"] == "1.0.0"
+    assert "installedAt" in entry
+    assert "lastUpdated" in entry
+
+
+def test_install_enables_plugin_in_settings_json(installer, source_plugin_dir, tmp_path):
+    """install() sets enabledPlugins[codebase-wizard@local] = True in settings.json."""
+    installer.install(source_plugin_dir, "global")
+    settings_path = tmp_path / "home" / ".claude" / "settings.json"
+    assert settings_path.exists(), "settings.json not created"
+    data = json.loads(settings_path.read_text())
+    assert data.get("enabledPlugins", {}).get(PLUGIN_REGISTRY_KEY) is True, (
+        f"'{PLUGIN_REGISTRY_KEY}' not enabled in settings.json"
+    )
+
+
+def test_install_registers_local_marketplace(installer, source_plugin_dir, tmp_path):
+    """install() adds 'local' entry to known_marketplaces.json."""
+    installer.install(source_plugin_dir, "global")
+    mp_path = tmp_path / "home" / ".claude" / "plugins" / "known_marketplaces.json"
+    assert mp_path.exists(), "known_marketplaces.json not created"
+    data = json.loads(mp_path.read_text())
+    assert "local" in data, "'local' marketplace not registered"
+
+
+def test_uninstall_removes_registration(installer, source_plugin_dir, tmp_path):
+    """uninstall() removes codebase-wizard@local from installed_plugins.json and settings.json."""
+    installer.install(source_plugin_dir, "global")
+    installer.uninstall("global")
+    registry_path = tmp_path / "home" / ".claude" / "plugins" / "installed_plugins.json"
+    if registry_path.exists():
+        data = json.loads(registry_path.read_text())
+        assert PLUGIN_REGISTRY_KEY not in data.get("plugins", {}), (
+            f"'{PLUGIN_REGISTRY_KEY}' still in installed_plugins.json after uninstall"
+        )
+    settings_path = tmp_path / "home" / ".claude" / "settings.json"
+    if settings_path.exists():
+        data = json.loads(settings_path.read_text())
+        assert PLUGIN_REGISTRY_KEY not in data.get("enabledPlugins", {}), (
+            f"'{PLUGIN_REGISTRY_KEY}' still in settings.json enabledPlugins after uninstall"
+        )
