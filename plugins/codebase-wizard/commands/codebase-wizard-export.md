@@ -1,4 +1,5 @@
 ---
+description: "Synthesize captured session logs into CODEBASE.md, TOUR.md, or FILE-NOTES.md."
 context: fork
 agent: codebase-wizard-agent
 ---

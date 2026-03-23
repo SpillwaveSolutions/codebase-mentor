@@ -1,4 +1,5 @@
 ---
+description: "One-time setup: install Agent Rulez hooks and write session-agent permissions."
 context: fork
 agent: codebase-wizard-setup-agent
 ---

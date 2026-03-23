@@ -1,5 +1,5 @@
 ---
-name: Configuring Codebase Wizard
+name: configuring-codebase-wizard
 description: >
   One-time setup for the Codebase Wizard. Use when the user runs
   /codebase-wizard-setup, says "set up the wizard", "install wizard", or

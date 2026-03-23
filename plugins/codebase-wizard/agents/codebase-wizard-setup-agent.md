@@ -4,6 +4,8 @@ description: >
   Pre-authorized agent for Codebase Wizard setup. Covers storage creation,
   Agent Rulez install, hook registration, and settings.local.json write.
   Broader permissions than the session agent — only used during /codebase-wizard-setup.
+model: inherit
+color: yellow
 
 allowed_tools:
   # File exploration (read-only, unrestricted)
