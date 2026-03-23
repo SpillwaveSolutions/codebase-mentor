@@ -3,6 +3,8 @@ name: codebase-wizard-agent
 description: >
   Pre-authorized agent for the Codebase Wizard. Covers scanning, Q&A,
   capture, synthesis, and export. Zero approval prompts during sessions.
+model: inherit
+color: blue
 
 allowed_tools:
   # File exploration (read-only, unrestricted paths)

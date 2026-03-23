@@ -1,5 +1,5 @@
 ---
-name: codebase-wizard
+name: explaining-codebase
 description: >
   Universal explainer for codebases, specs, design docs, and markdown files.
   Activates when a user wants to understand how their code works, explore a

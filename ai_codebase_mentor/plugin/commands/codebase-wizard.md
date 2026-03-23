@@ -1,4 +1,5 @@
 ---
+description: "Start a wizard session — explain, explore, or document any codebase or artifact."
 context: fork
 agent: codebase-wizard-agent
 ---

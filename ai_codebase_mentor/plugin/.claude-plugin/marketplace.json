@@ -17,24 +17,5 @@
     "url": "https://github.com/SpillwaveSolutions/codebase-mentor"
   },
   "runtime": "claude-code",
-  "entry": ".claude-plugin/plugin.json",
-  "install": {
-    "method": "python-package",
-    "package": "ai-codebase-mentor",
-    "command": "ai-codebase-mentor install --for claude"
-  },
-  "commands": [
-    {
-      "name": "codebase-wizard",
-      "description": "Start a wizard session — explain, explore, or document any codebase or artifact."
-    },
-    {
-      "name": "codebase-wizard-setup",
-      "description": "One-time setup: install Agent Rulez hooks and write session-agent permissions."
-    },
-    {
-      "name": "codebase-wizard-export",
-      "description": "Synthesize captured session logs into CODEBASE.md, TOUR.md, or FILE-NOTES.md."
-    }
-  ]
+  "entry": ".claude-plugin/plugin.json"
 }

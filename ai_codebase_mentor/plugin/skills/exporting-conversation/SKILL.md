@@ -1,5 +1,5 @@
 ---
-name: Exporting Conversation
+name: exporting-conversation
 description: >
   Synthesizes raw wizard session JSON into structured documentation. Use when
   the user runs /codebase-wizard-export, says "export session", "generate docs",
