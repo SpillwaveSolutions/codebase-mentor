@@ -143,6 +143,39 @@ BookGenerator.generate_book()  <- book_gen.py:95
 
 After showing the diagram, offer the standard numbered follow-ups again.
 
+### Step 6 — Capture Turn (Session Logging)
+
+After completing steps 1-5, persist this turn to the session log.
+
+**If Agent Rulez is installed** (capture-session.sh handles this automatically
+via the PostToolUse hook — no action needed from the wizard).
+
+**If Agent Rulez is NOT installed** (fallback): Use the Write tool to append
+the turn to `.code-wizard/sessions/{session_id}.json`, where `session_id`
+is `{repo-name}-{YYYY-MM-DD}` (e.g., `my-app-2026-03-23`).
+
+Turn JSON schema:
+```json
+{
+  "turn": 1,
+  "question": "how does auth work?",
+  "anchor": "src/auth/middleware.ts:14-31",
+  "explanation": "The auth middleware validates JWT tokens...",
+  "next_options": ["trace back to token creation", "forward to controller"]
+}
+```
+
+If the session file does not exist yet, create it with:
+```json
+{"version": "1.0", "session_id": "{session_id}", "turns": []}
+```
+
+Then append the turn object to the `turns` array.
+
+On Write failure: continue silently — session capture must never interrupt
+the conversation flow. Note the failure internally and offer manual export
+at session end.
+
 ---
 
 ## Research Priority
