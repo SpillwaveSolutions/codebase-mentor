@@ -1,0 +1,389 @@
+{
+  "skill": "codebase-wizard",
+  "skill_path": "plugins/codebase-wizard/skills/explaining-codebase/SKILL.md",
+  "description_snapshot": "Universal explainer for codebases, specs, design docs, and markdown files. Activates when a user wants to understand how their code works, explore a new codebase, document an existing one, or get walked through any markdown artifact.",
+  "generated_at": "2026-03-22",
+  "baseline_run": {
+    "pass_rate": {
+      "mean": 100.0,
+      "stddev": 0.0,
+      "delta_vs_baseline": null
+    },
+    "duration_ms": {
+      "mean": 700.1,
+      "stddev": 0.0,
+      "delta_vs_baseline": null
+    },
+    "total_tokens": {
+      "mean": 405.4,
+      "stddev": 0.0,
+      "delta_vs_baseline": null
+    }
+  },
+  "queries": [
+    {
+      "id": "T01",
+      "query": "explain this codebase to me",
+      "expected": true,
+      "category": "core_trigger",
+      "rationale": "Exact match for primary trigger phrase in description"
+    },
+    {
+      "id": "T02",
+      "query": "I just joined the team and need to understand how this repo works",
+      "expected": true,
+      "category": "onboarding",
+      "rationale": "Matches 'I'm new to this repo' intent \u2014 new developer exploring codebase"
+    },
+    {
+      "id": "T03",
+      "query": "walk me through the authentication flow in this project",
+      "expected": true,
+      "category": "core_trigger",
+      "rationale": "Matches 'walk me through this' + 'how does X work' patterns"
+    },
+    {
+      "id": "T04",
+      "query": "what calls the processPayment function?",
+      "expected": true,
+      "category": "code_navigation",
+      "rationale": "Exact match for 'what calls this' trigger"
+    },
+    {
+      "id": "T05",
+      "query": "explain this design doc and tell me what the architecture looks like",
+      "expected": true,
+      "category": "markdown_artifact",
+      "rationale": "Matches 'explain this design doc' trigger for markdown artifacts"
+    },
+    {
+      "id": "T06",
+      "query": "where does the UserService class get used across the codebase?",
+      "expected": true,
+      "category": "code_navigation",
+      "rationale": "Matches 'where does this get used' trigger"
+    },
+    {
+      "id": "T07",
+      "query": "I pasted this function \u2014 can you tell me what it does and how it connects to the rest?",
+      "expected": true,
+      "category": "micro_artifact",
+      "rationale": "Matches 'pastes code and asks questions about it' micro-artifact trigger"
+    },
+    {
+      "id": "T08",
+      "query": "--describe the src/api directory",
+      "expected": true,
+      "category": "command_flag",
+      "rationale": "Exact match for --describe command flag"
+    },
+    {
+      "id": "T09",
+      "query": "walk me through this roadmap \u2014 what are the milestones?",
+      "expected": true,
+      "category": "markdown_artifact",
+      "rationale": "Matches 'walk me through this roadmap' + 'what does this milestone mean'"
+    },
+    {
+      "id": "T10",
+      "query": "how does the caching layer work in this project?",
+      "expected": true,
+      "category": "core_trigger",
+      "rationale": "Matches 'how does X work' \u2014 standard exploration query"
+    },
+    {
+      "id": "F01",
+      "query": "refactor the authentication module to use dependency injection",
+      "expected": false,
+      "category": "false_trigger_refactor",
+      "rationale": "Refactoring is code modification, not explanation. Should NOT trigger an explainer skill."
+    },
+    {
+      "id": "F02",
+      "query": "write unit tests for the UserService class",
+      "expected": false,
+      "category": "false_trigger_testing",
+      "rationale": "Test generation is implementation work, not codebase understanding."
+    },
+    {
+      "id": "F03",
+      "query": "fix the bug where login fails after session timeout",
+      "expected": false,
+      "category": "false_trigger_bugfix",
+      "rationale": "Bug fixing is debugging/implementation \u2014 adjacent to 'explain' but distinct."
+    },
+    {
+      "id": "F04",
+      "query": "create a new REST endpoint for user profiles",
+      "expected": false,
+      "category": "false_trigger_implementation",
+      "rationale": "Feature creation is implementation, not exploration or documentation."
+    },
+    {
+      "id": "F05",
+      "query": "deploy this app to production using Docker",
+      "expected": false,
+      "category": "false_trigger_devops",
+      "rationale": "Deployment is ops work, completely outside the explainer domain."
+    },
+    {
+      "id": "F06",
+      "query": "review this pull request and suggest improvements",
+      "expected": false,
+      "category": "false_trigger_review",
+      "rationale": "PR review is evaluation/critique, not guided exploration. Near-miss \u2014 involves reading code but intent differs."
+    },
+    {
+      "id": "F07",
+      "query": "generate API documentation from the source code",
+      "expected": false,
+      "category": "false_trigger_docgen",
+      "rationale": "Auto-generating docs is a build/tooling task. The skill documents interactively, not via generation."
+    },
+    {
+      "id": "F08",
+      "query": "optimize the database queries in the reporting module",
+      "expected": false,
+      "category": "false_trigger_optimization",
+      "rationale": "Performance optimization is implementation work, not explanation."
+    },
+    {
+      "id": "F09",
+      "query": "set up CI/CD pipeline for this repository",
+      "expected": false,
+      "category": "false_trigger_infra",
+      "rationale": "Infrastructure setup \u2014 completely different domain from codebase understanding."
+    },
+    {
+      "id": "F10",
+      "query": "migrate this project from JavaScript to TypeScript",
+      "expected": false,
+      "category": "false_trigger_migration",
+      "rationale": "Migration is large-scale code modification. Dangerous near-miss \u2014 user might say 'walk me through migrating' which sounds like a trigger phrase."
+    }
+  ],
+  "metrics": {
+    "pass_rate": {
+      "mean": 100.0,
+      "stddev": 0.0,
+      "delta_vs_baseline": null
+    },
+    "duration_ms": {
+      "mean": 700.1,
+      "stddev": 0.0,
+      "delta_vs_baseline": null
+    },
+    "total_tokens": {
+      "mean": 405.4,
+      "stddev": 0.0,
+      "delta_vs_baseline": null
+    }
+  },
+  "last_run": {
+    "timestamp": "2026-03-22T21:31:50",
+    "model": "claude-haiku-4-5-20251001",
+    "runs": 1,
+    "results": [
+      {
+        "id": "T01",
+        "query": "explain this codebase to me",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 632.1,
+        "total_tokens": 404
+      },
+      {
+        "id": "T02",
+        "query": "I just joined the team and need to understand how this repo works",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 533.6,
+        "total_tokens": 410
+      },
+      {
+        "id": "T03",
+        "query": "walk me through the authentication flow in this project",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 914.0,
+        "total_tokens": 406
+      },
+      {
+        "id": "T04",
+        "query": "what calls the processPayment function?",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 489.1,
+        "total_tokens": 404
+      },
+      {
+        "id": "T05",
+        "query": "explain this design doc and tell me what the architecture looks like",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 576.1,
+        "total_tokens": 409
+      },
+      {
+        "id": "T06",
+        "query": "where does the UserService class get used across the codebase?",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 659.7,
+        "total_tokens": 410
+      },
+      {
+        "id": "T07",
+        "query": "I pasted this function \u2014 can you tell me what it does and how it connects to the rest?",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 500.4,
+        "total_tokens": 417
+      },
+      {
+        "id": "T08",
+        "query": "--describe the src/api directory",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 597.9,
+        "total_tokens": 403
+      },
+      {
+        "id": "T09",
+        "query": "walk me through this roadmap \u2014 what are the milestones?",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 514.3,
+        "total_tokens": 410
+      },
+      {
+        "id": "T10",
+        "query": "how does the caching layer work in this project?",
+        "expected": true,
+        "actual": true,
+        "answer_raw": "codebase-wizard",
+        "passed": true,
+        "duration_ms": 676.6,
+        "total_tokens": 407
+      },
+      {
+        "id": "F01",
+        "query": "refactor the authentication module to use dependency injection",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "refactor-helper",
+        "passed": true,
+        "duration_ms": 501.2,
+        "total_tokens": 405
+      },
+      {
+        "id": "F02",
+        "query": "write unit tests for the UserService class",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "test-runner",
+        "passed": true,
+        "duration_ms": 1026.7,
+        "total_tokens": 403
+      },
+      {
+        "id": "F03",
+        "query": "fix the bug where login fails after session timeout",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "none",
+        "passed": true,
+        "duration_ms": 565.5,
+        "total_tokens": 402
+      },
+      {
+        "id": "F04",
+        "query": "create a new REST endpoint for user profiles",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "none",
+        "passed": true,
+        "duration_ms": 533.0,
+        "total_tokens": 401
+      },
+      {
+        "id": "F05",
+        "query": "deploy this app to production using Docker",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "deploy-assistant",
+        "passed": true,
+        "duration_ms": 998.0,
+        "total_tokens": 402
+      },
+      {
+        "id": "F06",
+        "query": "review this pull request and suggest improvements",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "pr-reviewer",
+        "passed": true,
+        "duration_ms": 767.2,
+        "total_tokens": 402
+      },
+      {
+        "id": "F07",
+        "query": "generate API documentation from the source code",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "doc-generator",
+        "passed": true,
+        "duration_ms": 520.1,
+        "total_tokens": 402
+      },
+      {
+        "id": "F08",
+        "query": "optimize the database queries in the reporting module",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "refactor-helper",
+        "passed": true,
+        "duration_ms": 1469.0,
+        "total_tokens": 404
+      },
+      {
+        "id": "F09",
+        "query": "set up CI/CD pipeline for this repository",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "deploy-assistant",
+        "passed": true,
+        "duration_ms": 1049.0,
+        "total_tokens": 404
+      },
+      {
+        "id": "F10",
+        "query": "migrate this project from JavaScript to TypeScript",
+        "expected": false,
+        "actual": false,
+        "answer_raw": "refactor-helper",
+        "passed": true,
+        "duration_ms": 479.4,
+        "total_tokens": 404
+      }
+    ]
+  }
+}

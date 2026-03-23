@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trigger Tuning Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #8a8880;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #3d8b37;
+      --green-bg: #e8f5e3;
+      --green-border: #b4d9ae;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --red-border: #f0b8b8;
+      --blue: #3b82f6;
+      --blue-bg: #eff6ff;
+      --blue-border: #bfdbfe;
+      --yellow: #b45309;
+      --yellow-bg: #fef9c3;
+      --yellow-border: #fde68a;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-lg: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .badge-pass { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .badge-fail { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+    .badge-changed { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .badge-info { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+
+    .save-btn {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      transition: all 0.15s ease;
+    }
+
+    .save-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .save-btn.saved { background: var(--green); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      padding: 0 2rem;
+    }
+
+    .tab {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.85rem 1.5rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s ease;
+    }
+
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Main content */
+    .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+
+    /* Stats bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card .label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-card .value {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-card .delta {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .delta-pos { color: var(--green); }
+    .delta-neg { color: var(--red); }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--surface);
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    /* Query table */
+    .query-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .query-table thead {
+      background: #f5f4f0;
+    }
+
+    .query-table th {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .query-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f0efe8;
+      vertical-align: top;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .query-table tr:last-child td { border-bottom: none; }
+
+    .query-table tr.changed { background: var(--yellow-bg); }
+    .query-table tr.failed { background: var(--red-bg); }
+
+    .query-table tr:hover { background: #f9f8f4; }
+    .query-table tr.changed:hover { background: #fef3c3; }
+    .query-table tr.failed:hover { background: #fbe0e0; }
+
+    .id-cell {
+      font-family: 'Poppins', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .query-text { max-width: 400px; }
+
+    .category-tag {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #f0efe8;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Toggle switch */
+    .toggle-wrapper { display: flex; align-items: center; gap: 0.5rem; }
+
+    .toggle {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      cursor: pointer;
+    }
+
+    .toggle input { display: none; }
+
+    .toggle .slider {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      border-radius: 26px;
+      transition: 0.2s;
+    }
+
+    .toggle .slider::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle input:checked + .slider { background: var(--green); }
+    .toggle input:checked + .slider::before { transform: translateX(22px); }
+
+    .toggle-label {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      min-width: 28px;
+    }
+
+    .toggle-label.yes { color: var(--green); }
+    .toggle-label.no { color: var(--red); }
+
+    /* Result indicator */
+    .result-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 0.3rem;
+    }
+
+    .result-dot.pass { background: var(--green); }
+    .result-dot.fail { background: var(--red); }
+
+    .result-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    .answer-raw {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* Rationale */
+    .rationale {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-style: italic;
+      max-width: 250px;
+    }
+
+    /* Notes textarea */
+    .notes-input {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 0.85rem;
+      width: 100%;
+      min-height: 32px;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      resize: vertical;
+      color: var(--text);
+    }
+
+    .notes-input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    /* Benchmark tab */
+    .benchmark-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .bench-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .bench-card .metric-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .bench-card .metric-value {
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    .bench-card .metric-stddev {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .bench-card .metric-delta {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    /* Description section */
+    .description-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .description-section h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .description-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: white;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 200;
+    }
+
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--green); }
+    .toast.error { background: var(--red); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1 id="header-title">Trigger Tuning Review</h1>
+    <div class="header-right">
+      <span class="badge badge-info" id="query-count"></span>
+      <span class="badge" id="changes-badge" style="display:none"></span>
+      <button class="save-btn" id="save-btn" onclick="saveChanges()">Save Changes</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('queries')">Queries</button>
+    <button class="tab" onclick="switchTab('benchmark')">Benchmark</button>
+    <button class="tab" onclick="switchTab('description')">Description</button>
+  </div>
+
+  <div class="container">
+    <!-- Queries Tab -->
+    <div class="tab-content active" id="tab-queries">
+      <div class="stats-bar" id="stats-bar"></div>
+      <div class="filter-bar" id="filter-bar"></div>
+      <table class="query-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Query</th>
+            <th>Category</th>
+            <th>Should Trigger?</th>
+            <th>Last Result</th>
+            <th>Rationale</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="query-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Benchmark Tab -->
+    <div class="tab-content" id="tab-benchmark">
+      <div class="benchmark-grid" id="benchmark-grid"></div>
+      <div id="benchmark-details"></div>
+    </div>
+
+    <!-- Description Tab -->
+    <div class="tab-content" id="tab-description">
+      <div class="description-section">
+        <h3>Skill Description (from evals.json snapshot)</h3>
+        <div class="description-text" id="description-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /*__EMBEDDED_DATA__*/
+
+    let data = null;
+    let changes = {};
+    let notes = {};
+
+    async function init() {
+      // Load from embedded data or fetch from server
+      if (typeof EMBEDDED_DATA !== 'undefined') {
+        data = EMBEDDED_DATA;
+      } else {
+        const resp = await fetch('/api/evals');
+        data = await resp.json();
+      }
+
+      document.getElementById('header-title').textContent =
+        `Trigger Tuning: ${data.skill}`;
+      document.getElementById('query-count').textContent =
+        `${data.queries.length} queries`;
+
+      // Load saved notes
+      try {
+        const notesResp = await fetch('/api/notes');
+        if (notesResp.ok) notes = await notesResp.json();
+      } catch(e) {}
+
+      renderStats();
+      renderFilters();
+      renderQueries();
+      renderBenchmark();
+      renderDescription();
+    }
+
+    function renderStats() {
+      const queries = data.queries;
+      const results = data.last_run?.results || [];
+      const resultMap = {};
+      results.forEach(r => resultMap[r.id] = r);
+
+      const total = queries.length;
+      const shouldTrigger = queries.filter(q => q.expected).length;
+      const shouldNot = total - shouldTrigger;
+      const passed = results.filter(r => r.passed).length;
+      const failed = results.filter(r => !r.passed).length;
+      const falseTriggers = results.filter(r => r.actual && !r.expected).length;
+      const misfires = results.filter(r => !r.actual && r.expected).length;
+
+      const statsHtml = `
+        <div class="stat-card">
+          <div class="label">Total Queries</div>
+          <div class="value">${total}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Should Trigger</div>
+          <div class="value" style="color:var(--green)">${shouldTrigger}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Should NOT Trigger</div>
+          <div class="value" style="color:var(--red)">${shouldNot}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Pass Rate</div>
+          <div class="value">${results.length ? Math.round(passed/results.length*100) : '?'}%</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">False Triggers</div>
+          <div class="value" style="color:${falseTriggers ? 'var(--red)' : 'var(--green)'}">${falseTriggers}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Misfires</div>
+          <div class="value" style="color:${misfires ? 'var(--red)' : 'var(--green)'}">${misfires}</div>
+        </div>
+      `;
+      document.getElementById('stats-bar').innerHTML = statsHtml;
+    }
+
+    function renderFilters() {
+      const categories = [...new Set(data.queries.map(q => q.category))];
+      let html = `<button class="filter-btn active" onclick="filterBy('all')">All</button>`;
+      html += `<button class="filter-btn" onclick="filterBy('changed')">Changed</button>`;
+      html += `<button class="filter-btn" onclick="filterBy('failed')">Failed</button>`;
+      html += `<button class="filter-btn" onclick="filterBy('true')">Should Trigger</button>`;
+      html += `<button class="filter-btn" onclick="filterBy('false')">Should NOT</button>`;
+      categories.forEach(cat => {
+        const label = cat.replace(/_/g, ' ').replace('false trigger ', '');
+        html += `<button class="filter-btn" onclick="filterBy('cat:${cat}')">${label}</button>`;
+      });
+      document.getElementById('filter-bar').innerHTML = html;
+    }
+
+    function renderQueries(filter = 'all') {
+      const results = data.last_run?.results || [];
+      const resultMap = {};
+      results.forEach(r => resultMap[r.id] = r);
+
+      let queries = data.queries;
+      if (filter === 'changed') {
+        queries = queries.filter(q => changes[q.id] !== undefined);
+      } else if (filter === 'failed') {
+        queries = queries.filter(q => resultMap[q.id] && !resultMap[q.id].passed);
+      } else if (filter === 'true') {
+        queries = queries.filter(q => (changes[q.id] !== undefined ? changes[q.id] : q.expected));
+      } else if (filter === 'false') {
+        queries = queries.filter(q => !(changes[q.id] !== undefined ? changes[q.id] : q.expected));
+      } else if (filter.startsWith('cat:')) {
+        const cat = filter.slice(4);
+        queries = queries.filter(q => q.category === cat);
+      }
+
+      const tbody = document.getElementById('query-body');
+      tbody.innerHTML = '';
+
+      if (queries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No queries match this filter</h3></div></td></tr>`;
+        return;
+      }
+
+      queries.forEach(q => {
+        const result = resultMap[q.id];
+        const currentExpected = changes[q.id] !== undefined ? changes[q.id] : q.expected;
+        const isChanged = changes[q.id] !== undefined;
+        const isFailed = result && !result.passed;
+
+        let rowClass = '';
+        if (isChanged) rowClass = 'changed';
+        else if (isFailed) rowClass = 'failed';
+
+        let resultHtml = '<span style="color:var(--text-muted)">No run data</span>';
+        if (result) {
+          const passed = result.actual === currentExpected;
+          resultHtml = `
+            <span class="result-dot ${passed ? 'pass' : 'fail'}"></span>
+            <span class="result-text">${passed ? 'PASS' : 'FAIL'}</span>
+            <div class="answer-raw">${result.answer_raw}</div>
+          `;
+        }
+
+        const noteVal = notes[q.id] || '';
+
+        const tr = document.createElement('tr');
+        tr.className = rowClass;
+        tr.dataset.id = q.id;
+        tr.innerHTML = `
+          <td class="id-cell">${q.id}</td>
+          <td class="query-text">${escapeHtml(q.query)}</td>
+          <td><span class="category-tag">${q.category.replace(/_/g, ' ')}</span></td>
+          <td>
+            <div class="toggle-wrapper">
+              <label class="toggle">
+                <input type="checkbox" ${currentExpected ? 'checked' : ''}
+                       onchange="toggleExpected('${q.id}', this.checked)">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label ${currentExpected ? 'yes' : 'no'}">
+                ${currentExpected ? 'Yes' : 'No'}
+              </span>
+            </div>
+          </td>
+          <td>${resultHtml}</td>
+          <td class="rationale">${escapeHtml(q.rationale)}</td>
+          <td>
+            <textarea class="notes-input" placeholder="Add note..."
+                      onchange="updateNote('${q.id}', this.value)">${escapeHtml(noteVal)}</textarea>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggleExpected(id, value) {
+      const query = data.queries.find(q => q.id === id);
+      if (value === query.expected) {
+        delete changes[id];
+      } else {
+        changes[id] = value;
+      }
+      updateChangeBadge();
+      renderQueries(currentFilter);
+    }
+
+    function updateNote(id, value) {
+      if (value.trim()) {
+        notes[id] = value.trim();
+      } else {
+        delete notes[id];
+      }
+    }
+
+    let currentFilter = 'all';
+
+    function filterBy(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(filter.replace('cat:', '').replace(/_/g, ' ')) ||
+            (filter === 'all' && btn.textContent === 'All') ||
+            (filter === 'changed' && btn.textContent === 'Changed') ||
+            (filter === 'failed' && btn.textContent === 'Failed') ||
+            (filter === 'true' && btn.textContent === 'Should Trigger') ||
+            (filter === 'false' && btn.textContent === 'Should NOT')) {
+          btn.classList.add('active');
+        }
+      });
+      renderQueries(filter);
+    }
+
+    function updateChangeBadge() {
+      const badge = document.getElementById('changes-badge');
+      const count = Object.keys(changes).length;
+      if (count > 0) {
+        badge.style.display = '';
+        badge.className = 'badge badge-changed';
+        badge.textContent = `${count} changed`;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    async function saveChanges() {
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      try {
+        // Apply changes to data
+        for (const [id, value] of Object.entries(changes)) {
+          const query = data.queries.find(q => q.id === id);
+          if (query) query.expected = value;
+        }
+
+        // Save evals
+        const evalsResp = await fetch('/api/evals', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        // Save notes
+        if (Object.keys(notes).length > 0) {
+          await fetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(notes),
+          });
+        }
+
+        if (evalsResp.ok) {
+          changes = {};
+          updateChangeBadge();
+          renderStats();
+          renderQueries(currentFilter);
+          btn.classList.add('saved');
+          btn.textContent = 'Saved';
+          showToast('Changes saved to evals.json', 'success');
+          setTimeout(() => {
+            btn.classList.remove('saved');
+            btn.textContent = 'Save Changes';
+          }, 2000);
+        } else {
+          throw new Error('Save failed');
+        }
+      } catch (e) {
+        showToast('Error saving: ' + e.message, 'error');
+        btn.textContent = 'Save Changes';
+      }
+
+      btn.disabled = false;
+    }
+
+    function renderBenchmark() {
+      const metrics = data.metrics;
+      const baseline = data.baseline_run;
+      const grid = document.getElementById('benchmark-grid');
+
+      if (!metrics || !metrics.pass_rate.mean) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+          <h3>No benchmark data</h3><p>Run evals first: python3 evals/run_evals.py --set-baseline</p></div>`;
+        return;
+      }
+
+      const cards = [
+        { name: 'Pass Rate', key: 'pass_rate', unit: '%', good: 'higher' },
+        { name: 'Duration', key: 'duration_ms', unit: 'ms', good: 'lower' },
+        { name: 'Total Tokens', key: 'total_tokens', unit: 'tok', good: 'lower' },
+      ];
+
+      grid.innerHTML = cards.map(card => {
+        const m = metrics[card.key];
+        let deltaHtml = '';
+        if (m.delta_vs_baseline !== null) {
+          const isGood = card.good === 'higher' ? m.delta_vs_baseline >= 0 : m.delta_vs_baseline <= 0;
+          const sign = m.delta_vs_baseline >= 0 ? '+' : '';
+          deltaHtml = `<div class="metric-delta ${isGood ? 'delta-pos' : 'delta-neg'}">
+            ${sign}${m.delta_vs_baseline} vs baseline</div>`;
+        }
+        return `<div class="bench-card">
+          <div class="metric-name">${card.name}</div>
+          <div class="metric-value">${m.mean}${card.unit === '%' ? '%' : ''}</div>
+          <div class="metric-stddev">${m.stddev ? `\u00B1 ${m.stddev} ${card.unit}` : card.unit}</div>
+          ${deltaHtml}
+        </div>`;
+      }).join('');
+
+      // Show last run timestamp
+      if (data.last_run) {
+        document.getElementById('benchmark-details').innerHTML = `
+          <div class="description-section" style="margin-top:1.5rem">
+            <h3>Last Run</h3>
+            <p>Timestamp: ${data.last_run.timestamp} | Model: ${data.last_run.model} | Runs: ${data.last_run.runs}</p>
+          </div>`;
+      }
+    }
+
+    function renderDescription() {
+      document.getElementById('description-text').textContent =
+        data.description_snapshot || '(no description snapshot)';
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('tab-' + name).classList.add('active');
+    }
+
+    function showToast(message, type) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    init();
+  </script>
+</body>
+</html>
