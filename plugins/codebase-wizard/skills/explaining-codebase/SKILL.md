@@ -93,15 +93,55 @@ call chain — want me to search deeper?"
 
 ### Step 5 — Predict Next
 
-End every answer with 2-3 specific follow-up options:
+End every answer with 2-5 numbered follow-up options plus a free-text escape hatch:
 
 > **Next — want to:**
-> - **Trace back**: where does this token get created?
-> - **Forward**: what happens when `req.user` hits the controller?
-> - **Jump**: show me the DB save on signup
+> 1. **Trace back**: where does this token get created?
+> 2. **Forward**: what happens when `req.user` hits the controller?
+> 3. **Jump**: show me the DB save on signup
+>
+> *(or just tell me what you want)*
 
 Options must be specific to what was just shown. Never use generic
-options like "learn more" or "continue".
+options like "learn more" or "continue". User can reply with just a
+number ("2") to pick an option, or type anything in free text.
+
+**Visual Flow option:** When the current answer explains a pipeline,
+orchestration, data flow, or multi-step process, always include a
+**Visual Flow** option among the numbered follow-ups:
+
+> 1. **Visual Flow** — show me the pipeline as an ASCII diagram
+
+When the user picks Visual Flow, generate an ASCII diagram using
+box-drawing characters (│, ▼, ├──, └──) to show execution flow.
+Label each node with: function name, file anchor (`filename:line`), and
+brief purpose. Show parallel vs sequential branching clearly. Example:
+
+```
+BookGenerator.generate_book()  <- book_gen.py:95
+  │
+  ▼
+1. PromptProcessor.process_prompt()      <- prompt_processor.py:12
+  │
+  ▼
+2. TOCGenerator.generate_initial_toc()   <- toc_generator.py:84
+  │
+  ▼
+3. TOCGenerator.refine_toc()             <- toc_generator.py:344
+  │
+  ▼
+4. ChapterGenerator.generate_chapters()  <- chapter_generator.py:?
+  │
+  ├── For each chapter (sequential):
+  │    └── For each section (parallel, 3 workers):
+  │         ├── _generate_section_draft()   <- chapter_generator.py:483
+  │         ├── _refine_section()
+  │         └── _check_section_recency()
+  ▼
+5. _finalize_book()                      <- book_gen.py:154
+```
+
+After showing the diagram, offer the standard numbered follow-ups again.
 
 ---
 
@@ -259,15 +299,19 @@ it in one clause: "...JWT (a signed token the server can verify later)..."
 
 ### Step 4 - Predict Next (always)
 
-End every answer with options. Format:
+End every answer with numbered options plus free-text escape hatch. Format:
 
 > **Next - want to:**
-> - **Trace back**: where does this token get created?
-> - **Forward**: what happens when `req.user` hits the controller?
-> - **Jump**: show me the DB save on signup
+> 1. **Trace back**: where does this token get created?
+> 2. **Forward**: what happens when `req.user` hits the controller?
+> 3. **Jump**: show me the DB save on signup
+>
+> *(or just tell me what you want)*
 
-User can reply: `"forward"`, `"back"`, `"jump to DB"`, `"more"`, or
-just describe what they want in plain language.
+User can reply with a number ("2"), a keyword (`"forward"`, `"back"`,
+`"jump to DB"`, `"more"`), or just describe what they want in free text.
+When explaining pipelines or multi-step flows, include a **Visual Flow**
+option (see Answer Loop Step 5 for format and diagram rules).
 
 ### Push updates to session stack
 
@@ -314,9 +358,11 @@ Agent Rulez or in-memory buffer — see Plan 2).
 
 After each section:
 > **Next — want to:**
-> - **Next section**: [section name]
-> - **Deeper here**: ask me more about this section
-> - **Jump to**: [specific section name]
+> 1. **Next section**: [section name]
+> 2. **Deeper here**: ask me more about this section
+> 3. **Jump to**: [specific section name]
+>
+> *(or just tell me what you want)*
 
 ### File Mode Output
 
