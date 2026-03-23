@@ -7,8 +7,8 @@
 **Target features:**
 - ✓ `opencode.py` — converts Claude Code plugin format (agents, commands) to OpenCode native format (Phase 8 complete 2026-03-22)
 - ✓ `ai-codebase-mentor install --for opencode` works end-to-end with clean install/uninstall (Phase 8 complete)
-- `publish-pypi.yml` — GitHub Actions workflow that publishes to PyPI on semver tag push
-- `pip install ai-codebase-mentor` works from PyPI
+- ✓ `publish-pypi.yml` — GitHub Actions workflow that publishes to PyPI on semver tag push (Phase 9 complete 2026-03-22)
+- ✓ `pip install ai-codebase-mentor` works from PyPI (v1.2.0 published)
 
 ## What This Is
 
@@ -87,4 +87,4 @@ The policy islands pattern (documented in the article provided) is the architect
 | Lazy import in `_get_converters()` | adding new runtimes requires only adding to the dict — no CLI structural change | ✓ Good |
 
 ---
-*Last updated: 2026-03-22 — Phase 8 complete (opencode.py), Phase 9 (PyPI publish) next*
+*Last updated: 2026-03-22 — Milestone v1.2 complete: opencode.py + PyPI publish (v1.2.0)*
