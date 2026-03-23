@@ -9,23 +9,5 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/SpillwaveSolutions/codebase-mentor",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SpillwaveSolutions/codebase-mentor"
-  },
-  "runtime": "claude-code",
-  "commands": [
-    "commands/codebase-wizard.md",
-    "commands/codebase-wizard-export.md",
-    "commands/codebase-wizard-setup.md"
-  ],
-  "agents": [
-    "agents/codebase-wizard-agent.md",
-    "agents/codebase-wizard-setup-agent.md"
-  ],
-  "skills": [
-    "skills/explaining-codebase/SKILL.md",
-    "skills/configuring-codebase-wizard/SKILL.md",
-    "skills/exporting-conversation/SKILL.md"
-  ]
+  "repository": "https://github.com/SpillwaveSolutions/codebase-mentor"
 }
