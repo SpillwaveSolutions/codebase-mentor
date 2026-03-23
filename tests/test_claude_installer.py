@@ -6,10 +6,23 @@ from pathlib import Path
 
 import pytest
 
-from ai_codebase_mentor.converters.claude import ClaudeInstaller, PLUGIN_REGISTRY_KEY
+from ai_codebase_mentor.converters.claude import (
+    ClaudeInstaller,
+    MARKETPLACE_ID,
+    PLUGIN_NAME,
+    PLUGIN_REGISTRY_KEY,
+)
 
 # Path to the real plugin source (relative to project root)
 REAL_PLUGIN_SOURCE = Path(__file__).parent.parent / "plugins" / "codebase-wizard"
+
+
+def _global_cache_path(tmp_path: Path, version: str = "1.0.0") -> Path:
+    """Return the expected global install cache path for tests."""
+    return (
+        tmp_path / "home" / ".claude" / "plugins" / "cache"
+        / MARKETPLACE_ID / PLUGIN_NAME / version
+    )
 
 
 @pytest.fixture
@@ -33,12 +46,9 @@ def installer(tmp_path, monkeypatch):
 
 
 def test_global_install_copies_plugin_json(installer, source_plugin_dir, tmp_path):
-    """install(source, 'global') copies plugin.json to ~/.claude/plugins/codebase-wizard/."""
+    """install(source, 'global') copies plugin.json to the versioned cache directory."""
     installer.install(source_plugin_dir, "global")
-    dest_manifest = (
-        tmp_path / "home" / ".claude" / "plugins" / "codebase-wizard"
-        / ".claude-plugin" / "plugin.json"
-    )
+    dest_manifest = _global_cache_path(tmp_path) / ".claude-plugin" / "plugin.json"
     assert dest_manifest.exists(), f"plugin.json not found at {dest_manifest}"
 
 
@@ -59,11 +69,16 @@ def test_global_install_is_idempotent(installer, source_plugin_dir):
 
 
 def test_global_uninstall_removes_directory(installer, source_plugin_dir, tmp_path):
-    """uninstall('global') removes ~/.claude/plugins/codebase-wizard/ entirely."""
+    """uninstall('global') removes the entire plugin directory from the cache."""
     installer.install(source_plugin_dir, "global")
     installer.uninstall("global")
-    dest = tmp_path / "home" / ".claude" / "plugins" / "codebase-wizard"
-    assert not dest.exists(), f"Expected directory to be removed: {dest}"
+    cache_plugin_dir = (
+        tmp_path / "home" / ".claude" / "plugins" / "cache"
+        / MARKETPLACE_ID / PLUGIN_NAME
+    )
+    assert not cache_plugin_dir.exists(), (
+        f"Expected cache plugin directory to be removed: {cache_plugin_dir}"
+    )
 
 
 def test_project_uninstall_removes_directory(installer, source_plugin_dir, tmp_path):
@@ -80,10 +95,10 @@ def test_uninstall_when_not_installed_is_noop(installer):
 
 
 def test_status_after_global_install(installer, source_plugin_dir, tmp_path):
-    """status() returns installed=True with correct location and version after global install."""
+    """status() returns installed=True with the cache path and version after global install."""
     installer.install(source_plugin_dir, "global")
     result = installer.status()
-    expected_location = str(tmp_path / "home" / ".claude" / "plugins" / "codebase-wizard")
+    expected_location = str(_global_cache_path(tmp_path))
     assert result["installed"] is True
     assert result["location"] == expected_location
     assert result["version"] == "1.0.0"
@@ -112,10 +127,12 @@ def test_install_registers_in_installed_plugins_json(installer, source_plugin_di
     )
     entry = data["plugins"][PLUGIN_REGISTRY_KEY][0]
     assert entry["scope"] == "user"
-    assert "installPath" in entry
+    assert "cache" in entry["installPath"], "installPath should use cache directory"
+    assert MARKETPLACE_ID in entry["installPath"], "installPath should include marketplace ID"
     assert entry["version"] == "1.0.0"
     assert "installedAt" in entry
     assert "lastUpdated" in entry
+    assert "gitCommitSha" in entry
 
 
 def test_install_enables_plugin_in_settings_json(installer, source_plugin_dir, tmp_path):
@@ -157,3 +174,19 @@ def test_uninstall_removes_registration(installer, source_plugin_dir, tmp_path):
         assert PLUGIN_REGISTRY_KEY not in data.get("enabledPlugins", {}), (
             f"'{PLUGIN_REGISTRY_KEY}' still in settings.json enabledPlugins after uninstall"
         )
+
+
+def test_update_replaces_old_version(installer, source_plugin_dir, tmp_path):
+    """Installing a new version removes the old version directory from cache."""
+    # Simulate an older version already installed
+    old_version_dir = _global_cache_path(tmp_path, "0.9.0")
+    old_version_dir.mkdir(parents=True)
+    (old_version_dir / "old-marker.txt").touch()
+
+    installer.install(source_plugin_dir, "global")
+
+    # Old version dir should be gone
+    assert not old_version_dir.exists(), "Old version directory should be removed on update"
+    # New version should be installed
+    new_version_dir = _global_cache_path(tmp_path, "1.0.0")
+    assert new_version_dir.exists(), "New version directory should exist after install"
