@@ -1,25 +1,41 @@
 # agent-rulez-sample.yaml
-# TEMPLATE — do not deploy directly.
-# Deployed to: {resolved_storage}/agent-rulez.yaml by /codebase-wizard-setup
-# setup.sh substitutes {resolved_storage} with the actual resolved storage path.
-#
-# Variable reference (Agent Rulez native interpolation):
-#   {date} → YYYY-MM-DD at hook invocation time
-#   {repo} → basename of the current working directory
-#
-# If Agent Rulez does not support {date}/{repo} natively, setup.sh
-# pre-computes them and writes static values into the deployed YAML.
+# Deployed to .claude/hooks.yaml by /codebase-wizard-setup.
+# Provides security enforcement (block rules) and session capture (run rule).
+# Activated with: rulez install
 
-hooks:
-  - event: PostToolUse
-    action: append
-    target: "{resolved_storage}/sessions/{date}-{repo}.json"
-    format: json
-    on_error: warn
-    # on_error: warn — capture failures notify the user but do not abort
-    # the session. The wizard maintains an in-memory buffer and offers to
-    # flush it at session end if hooks failed.
-
-  - event: Stop
-    action: notify
-    message: "Session ended. Run /codebase-wizard-export to generate docs."
+version: "1.0"
+settings:
+  debug_logs: false
+  log_level: info
+  fail_open: true
+  script_timeout: 5
+rules:
+  - name: block-force-push
+    description: Prevent force-pushing to main or master branches
+    matchers:
+      tools: [Bash]
+      command_match: "git push.*(--force|-f).*(main|master)"
+    actions:
+      block: true
+    metadata:
+      priority: 100
+      enabled: true
+  - name: block-recursive-delete
+    description: Prevent rm -rf on non-temporary directories
+    matchers:
+      tools: [Bash]
+      command_match: "rm\\s+-rf?\\s+(?!\\/tmp|\\.code-wizard\\/tmp)"
+    actions:
+      block: true
+    metadata:
+      priority: 90
+      enabled: true
+  - name: capture-session
+    description: Capture tool call events to session JSON for /codebase-wizard-export
+    matchers:
+      tools: [Read, Grep, Glob, Write]
+    actions:
+      run: "bash .code-wizard/scripts/capture-session.sh"
+    metadata:
+      priority: 10
+      enabled: true
