@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-23T02:13:08.454Z"
+last_updated: "2026-03-23T00:00:00.000Z"
 progress:
   total_phases: 9
   completed_phases: 9
@@ -107,6 +107,9 @@ None currently.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260322-uqt | Commit existing evals infrastructure — trigger tuning test cases, eval runner, and HTML review UI for codebase-wizard skill | 2026-03-23 | 7ad631e | [260322-uqt-commit-existing-evals-infrastructure-tri](./quick/260322-uqt-commit-existing-evals-infrastructure-tri/) |
+| 260323-v121 | v1.2.1 — OpenCode singular directories fix: agents/→agent/, skills/→skill/ in opencode.py; updated 6 test assertions in test_opencode_installer.py; all 14 OpenCode tests pass | 2026-03-23 | — | — |
+| 260323-v122 | v1.2.2 — Claude plugin registry fix: installer was only copying files, never writing registry entries; added _register_plugin(), _register_marketplace(), _register_installed_plugin(), _enable_plugin(), _unregister_plugin() helpers and PLUGIN_REGISTRY_KEY/MARKETPLACE_ID constants to claude.py; 4 new tests; all 13 Claude tests pass | 2026-03-23 | — | — |
+| 260323-v123 | v1.2.3 — Two hotfixes: (1) Wrong marketplace ID corrected: PLUGIN_REGISTRY_KEY=codebase-wizard@codebase-mentor, MARKETPLACE_ID=codebase-mentor, _register_marketplace() writes source: git with GitHub URL; (2) Plugin component frontmatter fixed: all 3 commands got description field, both agents got model+color fields, skill names converted to kebab-case, plugin-level marketplace.json invalid python-package block and redundant commands array removed. Tagged v1.2.3, pushed, GitHub release created. Commits: 923b2e7 (registry fix), ee22f73 (plugin frontmatter). All 27 tests pass. | 2026-03-23 | ee22f73 | — |
 
 ## Accumulated Context
 
@@ -127,9 +130,10 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-23 - Completed quick task 260322-uqt: Commit existing evals infrastructure
+- Last activity: 2026-03-23 - Hotfix releases v1.2.1, v1.2.2, v1.2.3 shipped and documented
 - Last executed: 09-01-PLAN.md (2026-03-22) — PyPI publish pipeline complete
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
 - All 9 phases complete; all 12 plans complete
-- Push `git tag v1.2.0 && git push origin v1.2.0` to publish ai-codebase-mentor 1.2.0 to PyPI
-- Next: v1.3 milestone (Codex subagents) when ready
+- v1.2.3 tagged and published to GitHub; plugin installed at ~/.claude/plugins/codebase-wizard/ with correct codebase-wizard@codebase-mentor registry entries; Claude Code restart required to load plugin
+- All 27 tests pass (14 OpenCode + 13 Claude)
+- Next: v1.3 milestone (Codex subagents) — begin with /gsd:plan-phase
