@@ -132,7 +132,7 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-23 - Hotfix releases v1.2.1, v1.2.2, v1.2.3 shipped and documented
+- Last activity: 2026-03-23 - First-run test of codebase-wizard on book_generator; Agent Rulez schema findings captured in todo; installer cache-path fix shipped (25fc322)
 - Last executed: 09-01-PLAN.md (2026-03-22) — PyPI publish pipeline complete
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
 - All 9 phases complete; all 12 plans complete
