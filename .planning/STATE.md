@@ -3,27 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-23T00:00:00.000Z"
+last_updated: "2026-03-23T22:59:17.061Z"
 progress:
-  total_phases: 9
-  completed_phases: 9
-  total_plans: 12
-  completed_plans: 12
+  total_phases: 11
+  completed_phases: 10
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 09 (pypi-publish) — COMPLETE
-Plan: 1 of 1 — COMPLETE
+Phase: 11 (Wizard UX improvements) — COMPLETE
+Plan: 1 of 1 — COMPLETE (2026-03-23)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 09 — pypi-publish
+**Current focus:** Phase 11 — Wizard UX improvements
 
 ## Completed Work (v1.0)
 
@@ -64,6 +64,12 @@ Plan 08-01 tasks — all verified complete (2026-03-22):
 - [x] Task 3: Wire CLI _get_converters() to include opencode (commit 4f8fcd1)
 - [x] Verification: 13 OpenCode tests PASS, 9 Claude tests PASS (zero regressions)
 
+Plan 11-01 tasks — all verified complete (2026-03-23):
+
+- [x] Task 1: Update explaining-codebase SKILL.md — numbered options, free-text fallback, Visual Flow (commit f6f39ba)
+- [x] Task 2: Update exporting-conversation SKILL.md — numbered next_options in SESSION-TRANSCRIPT (commit 998475e)
+- [x] Verification: 0 bare bullet Next blocks, 3 escape hatch lines, 5 Visual Flow references, numbered export template, all 4 files in sync
+
 Plan 08-02 tasks — all verified complete (2026-03-22):
 
 - [x] Task 1: Update --for help text to include opencode in install/uninstall (commit b245dbe)
@@ -97,6 +103,8 @@ Plan 08-02 tasks — all verified complete (2026-03-22):
 - [Phase 08-opencode-converter]: 08-01 Task 3 pre-completed _get_converters() wiring; 08-02 updated --for help text only
 - [Phase 09-pypi-publish]: PyPI publish uses Trusted Publishers OIDC — no PYPI_TOKEN secret needed; publisher configured once on pypi.org
 - [Phase 09-pypi-publish]: Publish workflow fires on semver tag push only — test-installer.yml owns all testing; publish-pypi.yml has zero test steps
+- [Phase 11-wizard-ux-improvements]: Numbering applied at render time in SESSION-TRANSCRIPT template; next_options JSON array schema unchanged
+- [Phase 11-wizard-ux-improvements]: Visual Flow triggered by pipeline/orchestration/data flow/multi-step explanations; box-drawing chars (│ ▼ ├── └──) used for diagram format
 
 ## Blockers
 
@@ -112,6 +120,7 @@ None currently.
 | 260323-v123 | v1.2.3 — Two hotfixes: (1) Wrong marketplace ID corrected: PLUGIN_REGISTRY_KEY=codebase-wizard@codebase-mentor, MARKETPLACE_ID=codebase-mentor, _register_marketplace() writes source: git with GitHub URL; (2) Plugin component frontmatter fixed: all 3 commands got description field, both agents got model+color fields, skill names converted to kebab-case, plugin-level marketplace.json invalid python-package block and redundant commands array removed. Tagged v1.2.3, pushed, GitHub release created. Commits: 923b2e7 (registry fix), ee22f73 (plugin frontmatter). All 27 tests pass. | 2026-03-23 | ee22f73 | — |
 | 260323-mew | Document v1.2.1/1.2.2/1.2.3 hotfix releases in STATE.md | 2026-03-23 | 2406a05 | [260323-mew-document-v1-2-1-1-2-2-1-2-3-hotfix-relea](./quick/260323-mew-document-v1-2-1-1-2-2-1-2-3-hotfix-relea/) |
 | 260323-nrh | Rewrite agent-rulez todo with confirmed first-run findings: wrong schema (hooks: vs rules:), nonexistent rulez hook subcommand, Agent Rulez cannot do session capture, session capture belongs in wizard skill Answer Loop via Write tool | 2026-03-23 | f4cfaba | [260323-nrh-update-agent-rulez-todo-with-first-run-f](./quick/260323-nrh-update-agent-rulez-todo-with-first-run-f/) |
+| 260323-arz | Correction: Agent Rulez CAN capture JSON via run: action (passes PostToolUse event as stdin JSON); updated agent-rulez todo to reflect correct approach: run: script + Write tool fallback; added visual-flow-diagram todo; reinforced UX rule: wizard always ends with numbered options + free-text, never open question | 2026-03-23 | — | — |
 
 ## Accumulated Context
 
@@ -126,16 +135,18 @@ None currently.
 - **Phase 8 added (2026-03-21):** OpenCode converter — opencode.py, agent/command format conversion, TDD 13-case test suite, CLI wiring for `--for opencode` / `--for all` / status
 - **Phase 9 added (2026-03-21):** PyPI publish — pyproject.toml metadata completeness, publish-pypi.yml with Trusted Publishers OIDC, version bump to 1.2.0
 - v1.2 roadmap finalized: 2 phases, 3 plans (08-01, 08-02, 09-01)
+- **Phase 10 added (2026-03-23):** Fix Agent Rulez config and add session capture — correct rules: schema, fix setup.sh (rulez install), add capture-session.sh run: script + Write-tool fallback
+- **Phase 11 added (2026-03-23):** Wizard UX improvements — numbered next-options (1/2/3), free-text fallback, Visual Flow diagram option in explore mode
 
 ## Notes
 
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-23 - First-run test of codebase-wizard on book_generator; Agent Rulez schema findings captured in todo; installer cache-path fix shipped (25fc322)
-- Last executed: 09-01-PLAN.md (2026-03-22) — PyPI publish pipeline complete
+- Last activity: 2026-03-23 - Phase 11 complete: wizard Answer Loop now uses numbered options (1-5) + free-text escape hatch + Visual Flow option in all three Next blocks; SESSION-TRANSCRIPT export preserves numbered format
+- Last executed: 11-01-PLAN.md (2026-03-23) — Wizard UX improvements complete
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
-- All 9 phases complete; all 12 plans complete
+- All 11 phases complete; all 13 plans complete (Phase 11 Plan 01 done 2026-03-23)
 - v1.2.3 tagged and published to GitHub; plugin installed at ~/.claude/plugins/codebase-wizard/ with correct codebase-wizard@codebase-mentor registry entries; Claude Code restart required to load plugin
 - All 27 tests pass (14 OpenCode + 13 Claude)
 - Next: v1.3 milestone (Codex subagents) — begin with /gsd:plan-phase

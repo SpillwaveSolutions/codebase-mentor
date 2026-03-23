@@ -174,7 +174,7 @@ Plans:
 **Goal:** Update the wizard Answer Loop to use numbered follow-up options (1-5) instead of bare bullets, add a free-text escape hatch after every option block, and add a Visual Flow diagram option type for pipeline/orchestration explanations in explore mode. Sync changes to SESSION-TRANSCRIPT export template and bundled plugin copy.
 **Requirements**: UX-01 (numbered options + free-text fallback in all Next blocks), UX-02 (Visual Flow option type with ASCII diagram format for pipeline contexts)
 **Depends on:** Phase 10
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 11-01-PLAN.md — Numbered next-options, free-text fallback, Visual Flow option in SKILL.md + export template sync
