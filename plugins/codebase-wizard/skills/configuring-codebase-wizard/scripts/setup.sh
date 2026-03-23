@@ -58,15 +58,23 @@ EOF
 # Used by claude, opencode, and gemini installs.
 # ─────────────────────────────────────────────
 deploy_hooks() {
-  echo "Installing Agent Rulez..."
-  rulez install
+  echo "Installing Agent Rulez security rules and session capture..."
 
+  # Deploy the rules YAML (security enforcement + session capture)
   DEPLOYED_YAML="$RESOLVED_STORAGE/agent-rulez.yaml"
-  sed "s|{resolved_storage}|$RESOLVED_STORAGE|g" "$SAMPLE_YAML" > "$DEPLOYED_YAML"
-  echo "Deployed hook config: $DEPLOYED_YAML"
+  cp "$SAMPLE_YAML" "$DEPLOYED_YAML"
+  echo "Deployed rules config: $DEPLOYED_YAML"
 
-  rulez hook add --config "$DEPLOYED_YAML"
-  echo "Registered Agent Rulez hooks from $DEPLOYED_YAML"
+  # Deploy capture-session.sh to .code-wizard/scripts/
+  CAPTURE_SCRIPT="$SCRIPT_DIR/capture-session.sh"
+  mkdir -p "$RESOLVED_STORAGE/scripts"
+  cp "$CAPTURE_SCRIPT" "$RESOLVED_STORAGE/scripts/capture-session.sh"
+  chmod +x "$RESOLVED_STORAGE/scripts/capture-session.sh"
+  echo "Deployed capture script: $RESOLVED_STORAGE/scripts/capture-session.sh"
+
+  # Install Agent Rulez (reads .claude/hooks.yaml)
+  rulez install
+  echo "Agent Rulez installed — security rules and session capture active"
 }
 
 # ─────────────────────────────────────────────
