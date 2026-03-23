@@ -102,7 +102,7 @@ def test_install_raises_runtime_error_on_bad_source(installer):
 
 
 def test_install_registers_in_installed_plugins_json(installer, source_plugin_dir, tmp_path):
-    """install() writes codebase-wizard@local entry to installed_plugins.json."""
+    """install() writes codebase-wizard@codebase-mentor entry to installed_plugins.json."""
     installer.install(source_plugin_dir, "global")
     registry_path = tmp_path / "home" / ".claude" / "plugins" / "installed_plugins.json"
     assert registry_path.exists(), "installed_plugins.json not created"
@@ -119,7 +119,7 @@ def test_install_registers_in_installed_plugins_json(installer, source_plugin_di
 
 
 def test_install_enables_plugin_in_settings_json(installer, source_plugin_dir, tmp_path):
-    """install() sets enabledPlugins[codebase-wizard@local] = True in settings.json."""
+    """install() sets enabledPlugins[codebase-wizard@codebase-mentor] = True in settings.json."""
     installer.install(source_plugin_dir, "global")
     settings_path = tmp_path / "home" / ".claude" / "settings.json"
     assert settings_path.exists(), "settings.json not created"
@@ -129,17 +129,20 @@ def test_install_enables_plugin_in_settings_json(installer, source_plugin_dir, t
     )
 
 
-def test_install_registers_local_marketplace(installer, source_plugin_dir, tmp_path):
-    """install() adds 'local' entry to known_marketplaces.json."""
+def test_install_registers_codebase_mentor_marketplace(installer, source_plugin_dir, tmp_path):
+    """install() adds 'codebase-mentor' git entry to known_marketplaces.json."""
     installer.install(source_plugin_dir, "global")
     mp_path = tmp_path / "home" / ".claude" / "plugins" / "known_marketplaces.json"
     assert mp_path.exists(), "known_marketplaces.json not created"
     data = json.loads(mp_path.read_text())
-    assert "local" in data, "'local' marketplace not registered"
+    assert "codebase-mentor" in data, "'codebase-mentor' marketplace not registered"
+    entry = data["codebase-mentor"]
+    assert entry["source"]["source"] == "git", "marketplace source should be 'git'"
+    assert "url" in entry["source"], "marketplace source should have url"
 
 
 def test_uninstall_removes_registration(installer, source_plugin_dir, tmp_path):
-    """uninstall() removes codebase-wizard@local from installed_plugins.json and settings.json."""
+    """uninstall() removes codebase-wizard@codebase-mentor from installed_plugins.json and settings.json."""
     installer.install(source_plugin_dir, "global")
     installer.uninstall("global")
     registry_path = tmp_path / "home" / ".claude" / "plugins" / "installed_plugins.json"

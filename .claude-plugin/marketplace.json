@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "codebase-mentor",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Marketplace for Codebase Wizard — wizard-style codebase exploration, documentation, and Q&A",
   "owner": {
     "name": "Spillwave Solutions",

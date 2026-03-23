@@ -2,8 +2,8 @@
 
 Installs the Codebase Wizard plugin to the Claude Code plugin directories and
 registers it in all three Claude Code plugin registry files:
-  - known_marketplaces.json  (registers "local" as a marketplace source)
-  - installed_plugins.json   (registers the plugin under "codebase-wizard@local")
+  - known_marketplaces.json  (registers "codebase-mentor" as a git marketplace)
+  - installed_plugins.json   (registers the plugin under "codebase-wizard@codebase-mentor")
   - settings.json            (enables the plugin via enabledPlugins)
 
 Install destinations:
@@ -20,9 +20,11 @@ from pathlib import Path
 from .base import RuntimeInstaller, _read_version
 
 
-# Registry key used in installed_plugins.json and settings.json
-PLUGIN_REGISTRY_KEY = "codebase-wizard@local"
-MARKETPLACE_ID = "local"
+# Registry key used in installed_plugins.json and settings.json.
+# Format: "pluginname@marketplaceid" where marketplaceid is the key in known_marketplaces.json.
+PLUGIN_REGISTRY_KEY = "codebase-wizard@codebase-mentor"
+MARKETPLACE_ID = "codebase-mentor"
+MARKETPLACE_GIT_URL = "https://github.com/SpillwaveSolutions/codebase-mentor.git"
 
 
 class ClaudeInstaller(RuntimeInstaller):
@@ -39,8 +41,8 @@ class ClaudeInstaller(RuntimeInstaller):
         """Copy the plugin tree and register it with Claude Code.
 
         Writes three registry files so Claude Code loads the plugin:
-          1. known_marketplaces.json — registers "local" marketplace
-          2. installed_plugins.json  — registers codebase-wizard@local
+          1. known_marketplaces.json — registers "codebase-mentor" git marketplace
+          2. installed_plugins.json  — registers codebase-wizard@codebase-mentor
           3. settings.json           — enables the plugin
 
         Args:
@@ -129,7 +131,7 @@ class ClaudeInstaller(RuntimeInstaller):
         self._enable_plugin()
 
     def _register_marketplace(self) -> None:
-        """Add "local" marketplace to known_marketplaces.json if absent."""
+        """Add codebase-mentor git marketplace to known_marketplaces.json if absent."""
         path = Path.home() / ".claude" / "plugins" / "known_marketplaces.json"
         data: dict = {}
         if path.exists():
@@ -145,9 +147,9 @@ class ClaudeInstaller(RuntimeInstaller):
 
         if MARKETPLACE_ID not in data:
             data[MARKETPLACE_ID] = {
-                "source": {"source": "local"},
+                "source": {"source": "git", "url": MARKETPLACE_GIT_URL},
                 "installLocation": str(
-                    Path.home() / ".claude" / "plugins" / "local"
+                    Path.home() / ".claude" / "plugins" / "marketplaces" / MARKETPLACE_ID
                 ),
                 "lastUpdated": datetime.now(timezone.utc).isoformat(),
             }
@@ -189,7 +191,7 @@ class ClaudeInstaller(RuntimeInstaller):
         path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
     def _enable_plugin(self) -> None:
-        """Set enabledPlugins[codebase-wizard@local] = true in settings.json."""
+        """Set enabledPlugins[codebase-wizard@codebase-mentor] = true in settings.json."""
         path = Path.home() / ".claude" / "settings.json"
         data: dict = {}
         if path.exists():
