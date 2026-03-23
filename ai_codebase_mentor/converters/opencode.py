@@ -5,8 +5,8 @@ Installs the Codebase Wizard plugin to the OpenCode configuration directories:
   Project: ./.opencode/codebase-wizard/
 
 Agent frontmatter is converted from Claude Code format (allowed_tools: array)
-to OpenCode format (tools: object with lowercase keys). Command files are placed
-in command/ (singular). Skills are copied verbatim.
+to OpenCode format (tools: object with lowercase keys). OpenCode uses singular
+directory names: agent/, command/, skill/ (not agents/, commands/, skills/).
 """
 
 import json
@@ -231,8 +231,8 @@ class OpenCodeInstaller(RuntimeInstaller):
     def install(self, source: Path, target: str = "global") -> None:
         """Convert and install the plugin to the OpenCode configuration directory.
 
-        Converts agent frontmatter, renames commands/ -> command/, copies skills
-        verbatim, and writes opencode.json permission pre-authorization.
+        Converts agent frontmatter, renames commands/ -> command/, agents/ -> agent/,
+        skills/ -> skill/, and writes opencode.json permission pre-authorization.
 
         Args:
             source: Path to the bundled plugin directory (contains .claude-plugin/).
@@ -254,7 +254,7 @@ class OpenCodeInstaller(RuntimeInstaller):
 
             # Convert and copy agent files
             agents_src = source / "agents"
-            agents_dst = destination / "agents"
+            agents_dst = destination / "agent"
             agents_dst.mkdir(parents=True, exist_ok=True)
             for agent_file in agents_src.glob("*.md"):
                 content = agent_file.read_text(encoding="utf-8")
@@ -274,7 +274,7 @@ class OpenCodeInstaller(RuntimeInstaller):
             # Copy skills verbatim (runtime-agnostic)
             skills_src = source / "skills"
             if skills_src.exists():
-                shutil.copytree(skills_src, destination / "skills")
+                shutil.copytree(skills_src, destination / "skill")
 
             # Copy .claude-plugin directory (for version reading)
             claude_plugin_src = source / ".claude-plugin"

@@ -32,26 +32,26 @@ def installer(tmp_path, monkeypatch):
 
 
 def test_global_install_creates_agent_files(installer, source_plugin_dir, tmp_path):
-    """install(source, 'global') creates agents dir at ~/.config/opencode/codebase-wizard/agents/."""
+    """install(source, 'global') creates agent dir at ~/.config/opencode/codebase-wizard/agent/."""
     installer.install(source_plugin_dir, "global")
     agents_dir = (
-        tmp_path / "home" / ".config" / "opencode" / "codebase-wizard" / "agents"
+        tmp_path / "home" / ".config" / "opencode" / "codebase-wizard" / "agent"
     )
-    assert agents_dir.exists(), f"agents dir not found at {agents_dir}"
+    assert agents_dir.exists(), f"agent dir not found at {agents_dir}"
     assert (agents_dir / "codebase-wizard-agent.md").exists(), (
-        "codebase-wizard-agent.md not found in agents dir"
+        "codebase-wizard-agent.md not found in agent dir"
     )
 
 
 def test_project_install_creates_agent_files(installer, source_plugin_dir, tmp_path):
-    """install(source, 'project') creates agents dir at ./.opencode/codebase-wizard/agents/."""
+    """install(source, 'project') creates agent dir at ./.opencode/codebase-wizard/agent/."""
     installer.install(source_plugin_dir, "project")
     agents_dir = (
-        tmp_path / "cwd" / ".opencode" / "codebase-wizard" / "agents"
+        tmp_path / "cwd" / ".opencode" / "codebase-wizard" / "agent"
     )
-    assert agents_dir.exists(), f"agents dir not found at {agents_dir}"
+    assert agents_dir.exists(), f"agent dir not found at {agents_dir}"
     assert (agents_dir / "codebase-wizard-agent.md").exists(), (
-        "codebase-wizard-agent.md not found in agents dir"
+        "codebase-wizard-agent.md not found in agent dir"
     )
 
 
@@ -103,7 +103,7 @@ def test_agent_tool_names_lowercased(installer, source_plugin_dir, tmp_path):
     installer.install(source_plugin_dir, "global")
     agent_file = (
         tmp_path / "home" / ".config" / "opencode" / "codebase-wizard"
-        / "agents" / "codebase-wizard-agent.md"
+        / "agent" / "codebase-wizard-agent.md"
     )
     content = agent_file.read_text()
     assert "read: true" in content, (
@@ -141,7 +141,7 @@ def test_special_tool_mapping_applied(installer, source_plugin_dir, tmp_path):
     installer.install(temp_source, "global")
     agent_out = (
         tmp_path / "home" / ".config" / "opencode" / "codebase-wizard"
-        / "agents" / "codebase-wizard-agent.md"
+        / "agent" / "codebase-wizard-agent.md"
     )
     content = agent_out.read_text()
     assert "question: true" in content, (
@@ -154,7 +154,7 @@ def test_name_field_stripped(installer, source_plugin_dir, tmp_path):
     installer.install(source_plugin_dir, "global")
     agent_file = (
         tmp_path / "home" / ".config" / "opencode" / "codebase-wizard"
-        / "agents" / "codebase-wizard-agent.md"
+        / "agent" / "codebase-wizard-agent.md"
     )
     content = agent_file.read_text()
     # Find the frontmatter section (between first and second '---')
@@ -198,7 +198,7 @@ def test_subagent_type_normalized(installer, source_plugin_dir, tmp_path):
     installer.install(temp_source, "global")
     agent_out = (
         tmp_path / "home" / ".config" / "opencode" / "codebase-wizard"
-        / "agents" / "codebase-wizard-agent.md"
+        / "agent" / "codebase-wizard-agent.md"
     )
     content = agent_out.read_text()
     assert 'subagent_type: "general"' in content, (
