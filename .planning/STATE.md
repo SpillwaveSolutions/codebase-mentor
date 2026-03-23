@@ -102,6 +102,12 @@ Plan 08-02 tasks — all verified complete (2026-03-22):
 
 None currently.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260322-uqt | Commit existing evals infrastructure — trigger tuning test cases, eval runner, and HTML review UI for codebase-wizard skill | 2026-03-23 | 7ad631e | [260322-uqt-commit-existing-evals-infrastructure-tri](./quick/260322-uqt-commit-existing-evals-infrastructure-tri/) |
+
 ## Accumulated Context
 
 ### Roadmap Evolution
@@ -121,6 +127,7 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
+- Last activity: 2026-03-23 - Completed quick task 260322-uqt: Commit existing evals infrastructure
 - Last executed: 09-01-PLAN.md (2026-03-22) — PyPI publish pipeline complete
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
 - All 9 phases complete; all 12 plans complete
