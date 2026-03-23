@@ -13,8 +13,10 @@ provides:
   - "version 1.2.0 in pyproject.toml and __init__.py"
   - "publish-pypi.yml GitHub Actions workflow with Trusted Publisher OIDC"
   - "Package builds cleanly as sdist and wheel"
+  - "PyPI Trusted Publisher configured on pypi.org (human-verified)"
+  - "GitHub environment 'pypi' created — ready for OIDC on tag push"
 affects:
-  - "PyPI — once tag v1.2.0 is pushed and Trusted Publisher is configured"
+  - "PyPI — push v1.2.0 tag to publish"
 
 # Tech tracking
 tech-stack:
@@ -53,10 +55,10 @@ completed: 2026-03-22
 
 ## Performance
 
-- **Duration:** ~2 min
+- **Duration:** ~20 min (includes human-action checkpoint for Task 4)
 - **Started:** 2026-03-22T14:42:52Z
-- **Completed:** 2026-03-22T14:44:43Z
-- **Tasks:** 3 of 4 automated (Task 4 is human-action checkpoint)
+- **Completed:** 2026-03-22T~15:00:00Z
+- **Tasks:** 4 of 4 complete (3 automated + 1 human-action checkpoint)
 - **Files modified:** 3
 
 ## Accomplishments
@@ -65,6 +67,7 @@ completed: 2026-03-22
 - pyproject.toml enriched with authors, readme, 9 classifiers, [project.urls], and build>=1.0 dev dep
 - publish-pypi.yml workflow created with OIDC Trusted Publisher auth, semver tag trigger, zero test steps
 - Package builds cleanly producing ai_codebase_mentor-1.2.0.tar.gz and ai_codebase_mentor-1.2.0-py3-none-any.whl
+- PyPI Trusted Publisher configured on pypi.org and GitHub environment "pypi" created (human-verified Task 4)
 
 ## Task Commits
 
@@ -72,8 +75,10 @@ Each automated task was committed atomically:
 
 1. **Task 1: Bump version and add pyproject.toml metadata** - `3dc0377` (feat)
 2. **Task 2: Create publish-pypi.yml workflow** - `209ba54` (feat)
-3. **Task 3: Verify package builds cleanly** - no commit (verification-only task; no files changed)
-4. **Task 4: Configure Trusted Publisher on pypi.org** - CHECKPOINT (human-action required)
+3. **Task 3: Verify package builds cleanly** - `1c8c2df` (docs — plan completion marker)
+4. **Task 4: Configure Trusted Publisher on pypi.org** - `d3dba01` (chore — empty commit documenting external service configuration, human-confirmed)
+
+**Plan metadata:** `d3dba01` (final state documentation)
 
 ## Files Created/Modified
 
@@ -98,31 +103,27 @@ None - plan executed exactly as written.
 
 ## User Setup Required
 
-**External services require manual configuration before pushing v1.2.0 tag.**
+**External service configuration confirmed complete (Task 4 human-action checkpoint).**
 
-Complete these steps (Task 4 checkpoint):
+User confirmed "configured" — both services are set up:
 
-**On pypi.org:**
-1. Log in at https://pypi.org
-2. If package does not exist yet, go to Publishing > Add a new pending publisher:
-   - PyPI project name: `ai-codebase-mentor`
-   - Owner: `SpillwaveSolutions`
-   - Repository: `codebase-mentor`
-   - Workflow name: `publish-pypi.yml`
-   - Environment name: `pypi`
-3. If package already exists, go to package > Settings > Publishing > Add publisher with same values
+- PyPI Trusted Publisher configured: owner=SpillwaveSolutions, repo=codebase-mentor, workflow=publish-pypi.yml, environment=pypi
+- GitHub environment "pypi" created at https://github.com/SpillwaveSolutions/codebase-mentor/settings/environments
 
-**On GitHub:**
-4. Go to https://github.com/SpillwaveSolutions/codebase-mentor/settings/environments
-5. Create environment named `pypi`
+**To publish v1.2.0 to PyPI:**
+```bash
+git tag v1.2.0
+git push origin v1.2.0
+```
 
-After both are configured, push tag `v1.2.0` to trigger the publish workflow.
+This triggers publish-pypi.yml, which authenticates via OIDC (no secrets needed) and publishes to PyPI automatically.
 
 ## Next Phase Readiness
 
-- All automated setup is complete — pyproject.toml metadata is correct, workflow is correct, package builds
-- Blocked on human action: Trusted Publisher must be configured on pypi.org before the first tag push
-- Once checkpoint Task 4 is confirmed, push `git tag v1.2.0 && git push origin v1.2.0` to publish
+- All 4 tasks complete — pyproject.toml metadata is correct, workflow is correct, package builds cleanly, Trusted Publisher is configured
+- Pushing v1.2.0 tag will publish `ai-codebase-mentor==1.2.0` to PyPI
+- v1.2 milestone complete: OpenCode converter (Phase 8) + PyPI publish pipeline (Phase 9)
+- Next milestone v1.3 (Codex subagents) can begin when ready — no blockers from this phase
 
 ---
 *Phase: 09-pypi-publish*

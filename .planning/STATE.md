@@ -15,8 +15,8 @@ progress:
 
 ## Current Position
 
-Phase: 09 (pypi-publish) — EXECUTING
-Plan: 1 of 1
+Phase: 09 (pypi-publish) — COMPLETE
+Plan: 1 of 1 — COMPLETE
 
 ## Project Reference
 
@@ -121,6 +121,8 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last executed: 08-01-PLAN.md (2026-03-22) — OpenCodeInstaller TDD complete
-- v1.2 phase directories: .planning/phases/08-opencode-converter/, .planning/phases/09-pypi-publish/
-- Next: plan-phase 8 (08-02 — if exists) or 09-01 (PyPI publish)
+- Last executed: 09-01-PLAN.md (2026-03-22) — PyPI publish pipeline complete
+- v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
+- All 9 phases complete; all 12 plans complete
+- Push `git tag v1.2.0 && git push origin v1.2.0` to publish ai-codebase-mentor 1.2.0 to PyPI
+- Next: v1.3 milestone (Codex subagents) when ready

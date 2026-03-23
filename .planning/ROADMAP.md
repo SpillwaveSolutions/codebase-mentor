@@ -138,8 +138,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — OpenCode converter implementation with TDD (opencode.py + tests/test_opencode_installer.py)
-- [ ] 08-02-PLAN.md — Wire OpenCode converter into CLI — `--for opencode`, `--for all`, status reporting
+- [x] 08-01-PLAN.md — OpenCode converter implementation with TDD (opencode.py + tests/test_opencode_installer.py)
+- [x] 08-02-PLAN.md — Wire OpenCode converter into CLI — `--for opencode`, `--for all`, status reporting
 
 ### Phase 9: PyPI Publish
 
@@ -157,4 +157,4 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 09-01: pyproject.toml metadata + publish-pypi.yml workflow (version bump to 1.2.0, OIDC publish)
+- [x] 09-01: pyproject.toml metadata + publish-pypi.yml workflow (version bump to 1.2.0, OIDC publish)
