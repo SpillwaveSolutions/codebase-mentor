@@ -178,3 +178,14 @@ Plans:
 
 Plans:
 - [ ] 11-01-PLAN.md — Numbered next-options, free-text fallback, Visual Flow option in SKILL.md + export template sync
+
+### Phase 12: E2E integration tests for OpenCode and Claude installer: temp dir tests with sample plugin files, verify install works end-to-end, analyze and fix current install failures
+
+**Goal:** Fix the context:fork silent drop bug (map to subtask:true in opencode.json) and add E2E integration tests that exercise the full CLI install/uninstall/status workflow via CliRunner against temp directories, verifying correct file output for both OpenCode and Claude runtimes.
+**Requirements**: E2E-01, E2E-02, E2E-03, E2E-04, E2E-05, E2E-06, E2E-07, E2E-08, E2E-09, E2E-10
+**Depends on:** Phase 11
+**Plans:** 2 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — TDD: context:fork to subtask:true fix in opencode.py (RED tests then GREEN implementation)
+- [ ] 12-02-PLAN.md — E2E CliRunner integration tests + todo cleanup
