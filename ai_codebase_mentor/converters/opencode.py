@@ -202,6 +202,25 @@ def _rewrite_paths(content: str) -> str:
     return content
 
 
+def _has_context_fork(content: str) -> bool:
+    """Return True if markdown frontmatter contains 'context: fork'.
+
+    Args:
+        content: Full file content string (frontmatter + body).
+
+    Returns:
+        True if the YAML frontmatter has a top-level 'context: fork' field.
+    """
+    if not content.startswith("---"):
+        return False
+    rest = content[3:]
+    close_idx = re.search(r'\n---(\n|$)', rest)
+    if not close_idx:
+        return False
+    frontmatter = rest[:close_idx.start()]
+    return bool(re.search(r'^context:\s*fork\s*$', frontmatter, re.MULTILINE))
+
+
 class OpenCodeInstaller(RuntimeInstaller):
     """Installs the Codebase Wizard plugin for OpenCode.
 
@@ -263,11 +282,15 @@ class OpenCodeInstaller(RuntimeInstaller):
                 (agents_dst / agent_file.name).write_text(content, encoding="utf-8")
 
             # Copy commands -> command/ (singular), with path rewriting
+            # Detect context: fork in frontmatter and collect for subtask config
             commands_src = source / "commands"
             command_dst = destination / "command"
             command_dst.mkdir(parents=True, exist_ok=True)
+            fork_commands = []
             for cmd_file in commands_src.glob("*.md"):
                 content = cmd_file.read_text(encoding="utf-8")
+                if _has_context_fork(content):
+                    fork_commands.append(cmd_file.stem)
                 content = _rewrite_paths(content)
                 (command_dst / cmd_file.name).write_text(content, encoding="utf-8")
 
@@ -283,6 +306,10 @@ class OpenCodeInstaller(RuntimeInstaller):
 
             # Write opencode.json permission pre-authorization
             self._write_opencode_permissions(destination, target)
+
+            # Write subtask entries for commands with context: fork
+            if fork_commands:
+                self._write_opencode_subtasks(destination, fork_commands)
 
         except OSError as e:
             raise RuntimeError(f"Failed to install to {destination}: {e}") from e
@@ -374,6 +401,38 @@ class OpenCodeInstaller(RuntimeInstaller):
             data["permission"][key].update(entries)
 
         # Ensure parent directory exists before writing
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        with json_path.open("w") as f:
+            json.dump(data, f, indent=2)
+            f.write("\n")
+
+    def _write_opencode_subtasks(self, dest: Path, fork_commands: list) -> None:
+        """Write or merge command subtask entries into opencode.json.
+
+        Writes to dest.parent / "opencode.json" (same file as permissions).
+        Merges command entries — does not overwrite existing keys.
+
+        Args:
+            dest: The codebase-wizard install directory.
+            fork_commands: List of command names (stems) that have context:fork.
+        """
+        json_path = dest.parent / "opencode.json"
+        data: dict = {}
+        if json_path.exists():
+            try:
+                with json_path.open() as f:
+                    data = json.load(f)
+            except (json.JSONDecodeError, OSError) as e:
+                print(
+                    f"Warning: Could not parse {json_path}: {e}. "
+                    "Skipping subtask configuration.",
+                    file=sys.stderr,
+                )
+                return
+        if "command" not in data:
+            data["command"] = {}
+        for cmd_name in fork_commands:
+            data["command"][cmd_name] = {"subtask": True}
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open("w") as f:
             json.dump(data, f, indent=2)
