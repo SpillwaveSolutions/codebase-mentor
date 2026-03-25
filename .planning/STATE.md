@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-25T21:18:19.234Z"
+last_updated: "2026-03-25T21:21:47.217Z"
 progress:
   total_phases: 12
-  completed_phases: 11
+  completed_phases: 12
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 12 (e2e-integration-tests-for-opencode-and-claude-installer-temp-dir-tests-with-sample-plugin-files-verify-install-works-end-to-end-analyze-and-fix-current-install-failures) — EXECUTING
-Plan: 2 of 2
+Phase: 12 (e2e-integration-tests-for-opencode-and-claude-installer-temp-dir-tests-with-sample-plugin-files-verify-install-works-end-to-end-analyze-and-fix-current-install-failures) — COMPLETE
+Plan: 2 of 2 (DONE)
 
 ## Project Reference
 
@@ -82,6 +82,12 @@ Plan 12-01 tasks — all verified complete (2026-03-25):
 - [x] Task 2 (GREEN): Implement _has_context_fork() and _write_opencode_subtasks() (commit adcf47c)
 - [x] Verification: 18 OpenCode tests PASS, 14 Claude tests PASS, full suite 32 passed, 0 failed
 
+Plan 12-02 tasks — all verified complete (2026-03-25):
+
+- [x] Task 1: Create tests/test_e2e_installer.py with 9 CliRunner E2E tests (commit b7c5f4a)
+- [x] Task 2: Move context:fork pending todo to done/, full suite green (commit 76ca0f6)
+- [x] Verification: All 41 tests PASS (14 opencode + 14 claude + 9 e2e + 4 subtask), 0 failed
+
 ## Decisions
 
 | Date | Decision | Rationale |
@@ -113,6 +119,7 @@ Plan 12-01 tasks — all verified complete (2026-03-25):
 - [Phase 11-wizard-ux-improvements]: Visual Flow triggered by pipeline/orchestration/data flow/multi-step explanations; box-drawing chars (│ ▼ ├── └──) used for diagram format
 - [Phase 10-fix-agent-rulez-config-and-add-session-capture]: Agent Rulez uses rules: top-level key (not hooks:); rulez install is the correct activation command; capture-session.sh uses exported env vars for python3 to avoid shell interpolation hazards; Write-tool fallback in SKILL.md Step 6 for Agent Rulez-absent environments
 - [Phase 12]: _has_context_fork uses regex against raw frontmatter — no YAML library needed; _write_opencode_subtasks merges after permissions so both share the same opencode.json file
+- [Phase 12]: cli_env fixture pattern: monkeypatch.chdir() + monkeypatch.setattr(Path.home) works with CliRunner in-process invocations for full CLI isolation
 
 ## Blockers
 
@@ -152,12 +159,14 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-25 - Phase 12 Plan 01 complete: context:fork mapped to subtask:true in opencode.json via _has_context_fork() + _write_opencode_subtasks(); 32 tests pass
+- Last activity: 2026-03-25 - Phase 12 Plan 02 complete: 9 CliRunner E2E tests added in tests/test_e2e_installer.py; context:fork todo moved to done/; 41 tests pass
+- Prior phase 12 plan 01: context:fork mapped to subtask:true in opencode.json via _has_context_fork() + _write_opencode_subtasks()
 - Prior activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
 - Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config and session capture complete
 - Phase 11 also complete (2026-03-23): wizard Answer Loop now uses numbered options (1-5) + free-text escape hatch + Visual Flow option in all three Next blocks; SESSION-TRANSCRIPT export preserves numbered format
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
 - All 11 phases complete; all 14 plans complete (Phase 10 Plan 01 done 2026-03-23)
 - v1.2.3 tagged and published to GitHub; plugin installed at ~/.claude/plugins/codebase-wizard/ with correct codebase-wizard@codebase-mentor registry entries; Claude Code restart required to load plugin
-- All 27 tests pass (14 OpenCode + 13 Claude)
+- All 41 tests pass (18 OpenCode + 14 Claude + 9 E2E) — Phase 12 complete
+- Phase 12 COMPLETE: All 12 phases done, all 16 plans done
 - Next: v1.3 milestone (Codex subagents) — begin with /gsd:plan-phase
