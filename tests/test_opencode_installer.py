@@ -1,5 +1,6 @@
 """Tests for OpenCodeInstaller — install, uninstall, status for OpenCode runtime."""
 
+import json
 import shutil
 from pathlib import Path
 
@@ -213,3 +214,47 @@ def test_install_raises_on_missing_source(installer):
     """install() raises RuntimeError with 'not found' message for missing source."""
     with pytest.raises(RuntimeError, match="not found"):
         installer.install(Path("/nonexistent/path/does/not/exist"), "global")
+
+
+def test_context_fork_written_to_opencode_json(installer, source_plugin_dir, tmp_path):
+    """After install, opencode.json contains 'command' key with codebase-wizard subtask:true."""
+    installer.install(source_plugin_dir, "global")
+    json_path = tmp_path / "home" / ".config" / "opencode" / "opencode.json"
+    assert json_path.exists(), "opencode.json not created"
+    data = json.loads(json_path.read_text())
+    assert "command" in data, "opencode.json missing 'command' key"
+    assert data["command"]["codebase-wizard"]["subtask"] is True
+
+
+def test_all_fork_commands_get_subtask(installer, source_plugin_dir, tmp_path):
+    """After install, opencode.json command key has exactly 3 entries each with subtask:true."""
+    installer.install(source_plugin_dir, "global")
+    json_path = tmp_path / "home" / ".config" / "opencode" / "opencode.json"
+    data = json.loads(json_path.read_text())
+    expected_commands = {"codebase-wizard", "codebase-wizard-export", "codebase-wizard-setup"}
+    assert set(data["command"].keys()) == expected_commands
+    for cmd_name in expected_commands:
+        assert data["command"][cmd_name] == {"subtask": True}
+
+
+def test_subtask_idempotent(installer, source_plugin_dir, tmp_path):
+    """Calling install twice produces opencode.json with exactly 3 command entries."""
+    installer.install(source_plugin_dir, "global")
+    installer.install(source_plugin_dir, "global")
+    json_path = tmp_path / "home" / ".config" / "opencode" / "opencode.json"
+    data = json.loads(json_path.read_text())
+    assert len(data["command"]) == 3
+    for cmd_name in ["codebase-wizard", "codebase-wizard-export", "codebase-wizard-setup"]:
+        assert data["command"][cmd_name] == {"subtask": True}
+
+
+def test_subtask_merge_preserves_existing(installer, source_plugin_dir, tmp_path):
+    """Pre-existing opencode.json keys are preserved when subtask entries are merged."""
+    json_path = tmp_path / "home" / ".config" / "opencode" / "opencode.json"
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(json.dumps({"custom_key": "preserved_value"}))
+    installer.install(source_plugin_dir, "global")
+    data = json.loads(json_path.read_text())
+    assert data["custom_key"] == "preserved_value", "Pre-existing key was lost"
+    assert "command" in data, "command key missing after merge"
+    assert len(data["command"]) == 3
