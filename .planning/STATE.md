@@ -3,29 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-23T23:11:15.660Z"
+last_updated: "2026-03-25T21:18:19.234Z"
 progress:
-  total_phases: 11
+  total_phases: 12
   completed_phases: 11
-  total_plans: 14
-  completed_plans: 14
+  total_plans: 16
+  completed_plans: 15
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 10 (Fix Agent Rulez config and add session capture) — COMPLETE
-Plan: 1 of 1 — COMPLETE
-
-Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config fixed and session capture added
+Phase: 12 (e2e-integration-tests-for-opencode-and-claude-installer-temp-dir-tests-with-sample-plugin-files-verify-install-works-end-to-end-analyze-and-fix-current-install-failures) — EXECUTING
+Plan: 2 of 2
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 10 — Fix Agent Rulez config and add session capture
+**Current focus:** Phase 12 — e2e-integration-tests-for-opencode-and-claude-installer-temp-dir-tests-with-sample-plugin-files-verify-install-works-end-to-end-analyze-and-fix-current-install-failures
 
 ## Completed Work (v1.0)
 
@@ -78,6 +76,12 @@ Plan 08-02 tasks — all verified complete (2026-03-22):
 - [x] Task 2: Verify status command shows opencode alongside claude (no code change needed)
 - [x] Task 3: Full test suite — 22 passed, 0 failures (22 = 13 OpenCode + 9 Claude)
 
+Plan 12-01 tasks — all verified complete (2026-03-25):
+
+- [x] Task 1 (RED): Add 4 failing tests for context:fork subtask mapping (commit f704eb4)
+- [x] Task 2 (GREEN): Implement _has_context_fork() and _write_opencode_subtasks() (commit adcf47c)
+- [x] Verification: 18 OpenCode tests PASS, 14 Claude tests PASS, full suite 32 passed, 0 failed
+
 ## Decisions
 
 | Date | Decision | Rationale |
@@ -108,6 +112,7 @@ Plan 08-02 tasks — all verified complete (2026-03-22):
 - [Phase 11-wizard-ux-improvements]: Numbering applied at render time in SESSION-TRANSCRIPT template; next_options JSON array schema unchanged
 - [Phase 11-wizard-ux-improvements]: Visual Flow triggered by pipeline/orchestration/data flow/multi-step explanations; box-drawing chars (│ ▼ ├── └──) used for diagram format
 - [Phase 10-fix-agent-rulez-config-and-add-session-capture]: Agent Rulez uses rules: top-level key (not hooks:); rulez install is the correct activation command; capture-session.sh uses exported env vars for python3 to avoid shell interpolation hazards; Write-tool fallback in SKILL.md Step 6 for Agent Rulez-absent environments
+- [Phase 12]: _has_context_fork uses regex against raw frontmatter — no YAML library needed; _write_opencode_subtasks merges after permissions so both share the same opencode.json file
 
 ## Blockers
 
@@ -140,13 +145,15 @@ None currently.
 - v1.2 roadmap finalized: 2 phases, 3 plans (08-01, 08-02, 09-01)
 - **Phase 10 added (2026-03-23):** Fix Agent Rulez config and add session capture — correct rules: schema, fix setup.sh (rulez install), add capture-session.sh run: script + Write-tool fallback
 - **Phase 11 added (2026-03-23):** Wizard UX improvements — numbered next-options (1/2/3), free-text fallback, Visual Flow diagram option in explore mode
+- **Phase 12 added (2026-03-25):** E2E integration tests for OpenCode and Claude installer — temp dir tests with sample plugin files, verify install works end-to-end, analyze and fix current install failures
 
 ## Notes
 
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
+- Last activity: 2026-03-25 - Phase 12 Plan 01 complete: context:fork mapped to subtask:true in opencode.json via _has_context_fork() + _write_opencode_subtasks(); 32 tests pass
+- Prior activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
 - Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config and session capture complete
 - Phase 11 also complete (2026-03-23): wizard Answer Loop now uses numbered options (1-5) + free-text escape hatch + Visual Flow option in all three Next blocks; SESSION-TRANSCRIPT export preserves numbered format
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
