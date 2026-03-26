@@ -145,6 +145,7 @@ None currently.
 | 260323-mew | Document v1.2.1/1.2.2/1.2.3 hotfix releases in STATE.md | 2026-03-23 | 2406a05 | [260323-mew-document-v1-2-1-1-2-2-1-2-3-hotfix-relea](./quick/260323-mew-document-v1-2-1-1-2-2-1-2-3-hotfix-relea/) |
 | 260323-nrh | Rewrite agent-rulez todo with confirmed first-run findings: wrong schema (hooks: vs rules:), nonexistent rulez hook subcommand, Agent Rulez cannot do session capture, session capture belongs in wizard skill Answer Loop via Write tool | 2026-03-23 | f4cfaba | [260323-nrh-update-agent-rulez-todo-with-first-run-f](./quick/260323-nrh-update-agent-rulez-todo-with-first-run-f/) |
 | 260323-arz | Correction: Agent Rulez CAN capture JSON via run: action (passes PostToolUse event as stdin JSON); updated agent-rulez todo to reflect correct approach: run: script + Write tool fallback; added visual-flow-diagram todo; reinforced UX rule: wizard always ends with numbered options + free-text, never open question | 2026-03-23 | — | — |
+| 260326-0xq | Fix Agent Rulez install source sync and integration test issues: synced setup.sh (deploy_hooks runtime param + .claude/hooks.yaml copy) and SKILL.md Step 6 (always write wizard turns) to ai_codebase_mentor/plugin/; fixed integration test setup_sh path to use versioned cache dir; added assert_phase3_rulez_fired() hook event assertions | 2026-03-26 | 8cfeebd | [260326-0xq-fix-agent-rulez-install-source-sync-and-](./quick/260326-0xq-fix-agent-rulez-install-source-sync-and-/) |
 
 ## Accumulated Context
 
@@ -169,7 +170,7 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-26 - Phase 13 Plan 01 complete: 5 live integration tests in tests/test_wizard_live.py; fixture project created; slow marker registered; 49 fast tests pass
+- Last activity: 2026-03-26 - Quick task 260326-0xq: synced Agent Rulez fixes to install source tree; fixed integration test path and added hook event assertions
 - Prior phase 12 plan 01: context:fork mapped to subtask:true in opencode.json via _has_context_fork() + _write_opencode_subtasks()
 - Prior activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
 - Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config and session capture complete
