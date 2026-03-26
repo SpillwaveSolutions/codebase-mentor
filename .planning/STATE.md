@@ -3,27 +3,27 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-25T21:25:18.920Z"
+last_updated: "2026-03-26T04:57:34.130Z"
 progress:
-  total_phases: 12
-  completed_phases: 12
-  total_plans: 16
-  completed_plans: 16
+  total_phases: 13
+  completed_phases: 13
+  total_plans: 17
+  completed_plans: 17
 ---
 
 # State: Codebase Wizard
 
 ## Current Position
 
-Phase: 12 (e2e-integration-tests-for-opencode-and-claude-installer-temp-dir-tests-with-sample-plugin-files-verify-install-works-end-to-end-analyze-and-fix-current-install-failures) — COMPLETE
-Plan: 2 of 2 (DONE)
+Phase: 13 (live-wizard-cli-integration-tests) — COMPLETE
+Plan: 1 of 1 (DONE)
 
 ## Project Reference
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 12 — e2e-integration-tests-for-opencode-and-claude-installer-temp-dir-tests-with-sample-plugin-files-verify-install-works-end-to-end-analyze-and-fix-current-install-failures
+**Current focus:** All phases complete (v1.0 milestone done)
 
 ## Completed Work (v1.0)
 
@@ -88,6 +88,12 @@ Plan 12-02 tasks — all verified complete (2026-03-25):
 - [x] Task 2: Move context:fork pending todo to done/, full suite green (commit 76ca0f6)
 - [x] Verification: All 41 tests PASS (14 opencode + 14 claude + 9 e2e + 4 subtask), 0 failed
 
+Plan 13-01 tasks — all verified complete (2026-03-26):
+
+- [x] Task 1: Create fixture project and register slow marker (commit 40e4787)
+- [x] Task 2: Create tests/test_wizard_live.py with 5 live integration tests (commit f35da3f)
+- [x] Verification: 5 slow tests collected; pytest -m 'not slow' gives 49 passed, 5 deselected; no slash commands or --command flags
+
 ## Decisions
 
 | Date | Decision | Rationale |
@@ -120,6 +126,9 @@ Plan 12-02 tasks — all verified complete (2026-03-25):
 - [Phase 10-fix-agent-rulez-config-and-add-session-capture]: Agent Rulez uses rules: top-level key (not hooks:); rulez install is the correct activation command; capture-session.sh uses exported env vars for python3 to avoid shell interpolation hazards; Write-tool fallback in SKILL.md Step 6 for Agent Rulez-absent environments
 - [Phase 12]: _has_context_fork uses regex against raw frontmatter — no YAML library needed; _write_opencode_subtasks merges after permissions so both share the same opencode.json file
 - [Phase 12]: cli_env fixture pattern: monkeypatch.chdir() + monkeypatch.setattr(Path.home) works with CliRunner in-process invocations for full CLI isolation
+- [Phase 13]: Natural language prompts used for claude -p invocation -- slash commands not supported in -p mode
+- [Phase 13]: opencode run uses --dir flag; --command flag hangs silently and is excluded from all tests
+- [Phase 13]: Auth probe runs at module import time so pytest skip decisions are made at collection time not runtime
 
 ## Blockers
 
@@ -153,13 +162,14 @@ None currently.
 - **Phase 10 added (2026-03-23):** Fix Agent Rulez config and add session capture — correct rules: schema, fix setup.sh (rulez install), add capture-session.sh run: script + Write-tool fallback
 - **Phase 11 added (2026-03-23):** Wizard UX improvements — numbered next-options (1/2/3), free-text fallback, Visual Flow diagram option in explore mode
 - **Phase 12 added (2026-03-25):** E2E integration tests for OpenCode and Claude installer — temp dir tests with sample plugin files, verify install works end-to-end, analyze and fix current install failures
+- **Phase 13 added (2026-03-25):** Live wizard CLI integration tests — `claude -p` and `opencode` headless invocation with sample fixture project, verify `.code-wizard/docs/` output and hook files exist with expected content
 
 ## Notes
 
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-25 - Phase 12 Plan 02 complete: 9 CliRunner E2E tests added in tests/test_e2e_installer.py; context:fork todo moved to done/; 41 tests pass
+- Last activity: 2026-03-26 - Phase 13 Plan 01 complete: 5 live integration tests in tests/test_wizard_live.py; fixture project created; slow marker registered; 49 fast tests pass
 - Prior phase 12 plan 01: context:fork mapped to subtask:true in opencode.json via _has_context_fork() + _write_opencode_subtasks()
 - Prior activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
 - Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config and session capture complete
@@ -167,6 +177,6 @@ None currently.
 - v1.2 milestone COMPLETE: Phases 08 (OpenCode converter) + 09 (PyPI publish) done
 - All 11 phases complete; all 14 plans complete (Phase 10 Plan 01 done 2026-03-23)
 - v1.2.3 tagged and published to GitHub; plugin installed at ~/.claude/plugins/codebase-wizard/ with correct codebase-wizard@codebase-mentor registry entries; Claude Code restart required to load plugin
-- All 41 tests pass (18 OpenCode + 14 Claude + 9 E2E) — Phase 12 complete
-- Phase 12 COMPLETE: All 12 phases done, all 16 plans done
+- All 49 fast tests pass (18 OpenCode + 14 Claude + 9 E2E + 8 SETUP) + 5 slow tests added — Phase 13 complete
+- Phase 13 COMPLETE: All 13 phases done, all 17 plans done
 - Next: v1.3 milestone (Codex subagents) — begin with /gsd:plan-phase
