@@ -117,5 +117,14 @@ None - no external service configuration required. Running slow tests requires `
 - For CI with ANTHROPIC_API_KEY available, a separate `test-wizard-live.yml` workflow could gate on the secret presence (noted as open question in RESEARCH.md)
 
 ---
+## Self-Check: PASSED
+
+- FOUND: tests/fixtures/sample-wizard-project/README.md
+- FOUND: tests/fixtures/sample-wizard-project/src/main.py
+- FOUND: tests/test_wizard_live.py
+- FOUND: commit 40e4787 (fixture project + slow marker)
+- FOUND: commit f35da3f (test_wizard_live.py)
+- FOUND: 13-01-SUMMARY.md
+
 *Phase: 13-live-wizard-cli-integration-tests*
 *Completed: 2026-03-26*
