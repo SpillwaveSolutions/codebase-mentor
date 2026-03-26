@@ -43,3 +43,8 @@ include = ["ai_codebase_mentor*"]
 [project.urls]
 Homepage = "https://github.com/SpillwaveSolutions/codebase-mentor"
 Repository = "https://github.com/SpillwaveSolutions/codebase-mentor"
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: mark test as slow -- makes real LLM API calls (skip with -m 'not slow')",
+]
