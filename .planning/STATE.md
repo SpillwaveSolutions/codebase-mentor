@@ -147,6 +147,7 @@ None currently.
 | 260323-arz | Correction: Agent Rulez CAN capture JSON via run: action (passes PostToolUse event as stdin JSON); updated agent-rulez todo to reflect correct approach: run: script + Write tool fallback; added visual-flow-diagram todo; reinforced UX rule: wizard always ends with numbered options + free-text, never open question | 2026-03-23 | — | — |
 | 260326-0xq | Fix Agent Rulez install source sync and integration test issues: synced setup.sh (deploy_hooks runtime param + .claude/hooks.yaml copy) and SKILL.md Step 6 (always write wizard turns) to ai_codebase_mentor/plugin/; fixed integration test setup_sh path to use versioned cache dir; added assert_phase3_rulez_fired() hook event assertions | 2026-03-26 | 8cfeebd | [260326-0xq-fix-agent-rulez-install-source-sync-and-](./quick/260326-0xq-fix-agent-rulez-install-source-sync-and-/) |
 | 260326-rcf | Root cause fix: Agent Rulez run: action silently failed with `bash` prefix — rulez treats run: as a bare script path, not a shell command. Removed `bash` prefix from capture-session rule in both YAML copies. Slow integration tests confirm hook events now fire. 64 fast + 2 slow pass, 0 failed. | 2026-03-26 | 44227ec | — |
+| 260326-d30 | Add OpenCode e2e integration test: _probe_opencode, opencode_available fixture, opencode_integration_env fixture, run_opencode helper, _collect_failure_artifacts bundle (FAILURE_REPORT.md + tarball), test_agent_rulez_opencode_capture_to_export with 5-phase structure. 3 slow tests collected. | 2026-03-26 | 5f7bc0a | [260326-d30-add-opencode-e2e-integration-test-with-f](./quick/260326-d30-add-opencode-e2e-integration-test-with-f/) |
 
 ## Accumulated Context
 
@@ -171,7 +172,7 @@ None currently.
 - Plan 01 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan1-core-skill.md
 - Plan 02 file: docs/superpowers/plans/2026-03-19-codebase-wizard-plan2-capture-synthesis.md
 - Spec file: docs/superpowers/specs/2026-03-19-codebase-wizard-design.md
-- Last activity: 2026-03-26 - Quick task 260326-rcf: root cause fix for Agent Rulez capture-session; removed `bash` prefix from run: action in both YAML copies; all tests pass (64 fast + 2 slow)
+- Last activity: 2026-03-26 - Quick task 260326-d30: added OpenCode e2e test with failure artifact bundle; 3 slow tests now collected (claude + opencode_setup + opencode capture_to_export)
 - Prior phase 12 plan 01: context:fork mapped to subtask:true in opencode.json via _has_context_fork() + _write_opencode_subtasks()
 - Prior activity: 2026-03-23 - Phase 10 complete: Agent Rulez config fixed (rules: schema), capture-session.sh created, setup.sh fixed (rulez install), SKILL.md Answer Loop Step 6 added with Write-tool fallback
 - Last executed: 10-01-PLAN.md (2026-03-23) — Agent Rulez config and session capture complete
