@@ -63,15 +63,25 @@ Key behaviors from SKILL.md:
 
 ## Output
 
-All output is written to `{resolved_storage}/docs/{session_id}/`:
+The wizard workflow produces docs in two stages:
+
+**Stage 1 — Session capture** (during this command):
+Structured session turns are written to `{resolved_storage}/sessions/{session_id}.json`
+via the Write tool at each Answer Loop step. Agent Rulez PostToolUse hooks also append
+raw tool events to that file.
+
+**Stage 2 — Export** (via `/codebase-wizard-export`):
+The export command reads the session JSON and synthesizes the final doc files:
 
 | Mode | Documents generated |
 |------|-------------------|
-| Describe | `SESSION-TRANSCRIPT.md` + `CODEBASE.md` |
-| Explore | `SESSION-TRANSCRIPT.md` + `TOUR.md` |
-| File | `SESSION-TRANSCRIPT.md` + `FILE-NOTES.md` |
+| Describe | `{resolved_storage}/docs/{session_id}/SESSION-TRANSCRIPT.md` + `CODEBASE.md` |
+| Explore | `{resolved_storage}/docs/{session_id}/SESSION-TRANSCRIPT.md` + `TOUR.md` |
+| File | `{resolved_storage}/docs/{session_id}/SESSION-TRANSCRIPT.md` + `FILE-NOTES.md` |
 
 `SESSION-TRANSCRIPT.md` is always generated in every mode.
+
+Run `/codebase-wizard-export` after the session ends to produce the final docs.
 
 `{resolved_storage}` is read from `{resolved_storage}/config.json`,
 written during `/codebase-wizard-setup`.
