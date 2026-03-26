@@ -35,7 +35,7 @@ rules:
     matchers:
       tools: [Read, Grep, Glob, Write]
     actions:
-      run: "bash .code-wizard/scripts/capture-session.sh"
+      run: .code-wizard/scripts/capture-session.sh
     metadata:
       priority: 10
       enabled: true

@@ -48,3 +48,4 @@ Repository = "https://github.com/SpillwaveSolutions/codebase-mentor"
 markers = [
     "slow: mark test as slow -- makes real LLM API calls (skip with -m 'not slow')",
 ]
+addopts = "-m 'not slow'"

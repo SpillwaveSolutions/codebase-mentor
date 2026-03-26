@@ -56,8 +56,10 @@ EOF
 # ─────────────────────────────────────────────
 # Shared: Deploy Agent Rulez hooks
 # Used by claude, opencode, and gemini installs.
+# $1 = runtime: "claude" | "opencode" | "gemini" (default: claude)
 # ─────────────────────────────────────────────
 deploy_hooks() {
+  local runtime="${1:-claude}"
   echo "Installing Agent Rulez security rules and session capture..."
 
   # Deploy the rules YAML (security enforcement + session capture)
@@ -72,9 +74,22 @@ deploy_hooks() {
   chmod +x "$RESOLVED_STORAGE/scripts/capture-session.sh"
   echo "Deployed capture script: $RESOLVED_STORAGE/scripts/capture-session.sh"
 
-  # Install Agent Rulez (reads .claude/hooks.yaml)
-  rulez install
-  echo "Agent Rulez installed — security rules and session capture active"
+  # Copy rules to .claude/hooks.yaml — this is where rulez reads rules at hook-fire time
+  mkdir -p .claude
+  cp "$DEPLOYED_YAML" .claude/hooks.yaml
+  echo "Wrote rules to .claude/hooks.yaml"
+
+  # Register rulez hook in the runtime's settings file
+  case "$runtime" in
+    opencode)
+      rulez opencode install
+      echo "Agent Rulez installed for OpenCode — security rules and session capture active"
+      ;;
+    *)
+      rulez install
+      echo "Agent Rulez installed — security rules and session capture active"
+      ;;
+  esac
 }
 
 # ─────────────────────────────────────────────
@@ -115,7 +130,7 @@ install_opencode() {
 
   resolve_storage
   write_config
-  deploy_hooks
+  deploy_hooks opencode
 
   echo ""
   echo "OpenCode setup complete."
