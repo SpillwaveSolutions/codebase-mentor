@@ -468,6 +468,12 @@ def test_agent_rulez_claude_capture_to_export(
     assert_phase1_setup(project)
 
     # ── Phase 2: Wizard session ───────────────────────────────────────────────
+    # Use natural language trigger phrases rather than slash command syntax.
+    # claude -p does not support context:fork commands (the /codebase-wizard command
+    # uses context:fork to spawn codebase-wizard-agent). The explaining-codebase
+    # SKILL.md is triggered by the same natural language phrases — the command is a
+    # thin entry point only. Command file structure (frontmatter, registration) is
+    # verified by test_command_files_have_correct_structure() in tests/test_plugin_structure.py.
     session_result = run_claude(
         "describe this codebase. Use describe mode. "
         "Save each answer turn to the session log as you go. "
@@ -491,6 +497,8 @@ def test_agent_rulez_claude_capture_to_export(
     )
 
     # ── Phase 4: Export ───────────────────────────────────────────────────────
+    # Same rationale: /codebase-wizard-export uses context:fork, not supported in -p mode.
+    # The exporting-conversation SKILL.md handles the export logic directly.
     export_result = run_claude(
         "export the wizard session. Read the latest session JSON from "
         ".code-wizard/sessions/ and generate SESSION-TRANSCRIPT.md and CODEBASE.md.",
