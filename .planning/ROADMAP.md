@@ -189,3 +189,13 @@ Plans:
 Plans:
 - [ ] 12-01-PLAN.md — TDD: context:fork to subtask:true fix in opencode.py (RED tests then GREEN implementation)
 - [ ] 12-02-PLAN.md — E2E CliRunner integration tests + todo cleanup
+
+### Phase 13: live wizard CLI integration tests — claude -p and opencode headless invocation with sample fixture project, verify .code-wizard/docs output and hook files
+
+**Goal:** Create live E2E integration tests that invoke `claude -p` and `opencode run` in headless mode against a sample fixture project, verifying that the codebase-wizard skill produces SESSION-TRANSCRIPT.md output with expected structural content. Tests are marked @pytest.mark.slow and skip gracefully when auth is not available.
+**Requirements**: WIZARD-01, WIZARD-02, WIZARD-03, WIZARD-05, WIZARD-06, WIZARD-07, WIZARD-08
+**Depends on:** Phase 12
+**Plans:** 1 plan
+
+Plans:
+- [ ] 13-01-PLAN.md — Fixture project, slow marker config, and live test_wizard_live.py with claude/opencode tests
