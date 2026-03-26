@@ -145,14 +145,13 @@ After showing the diagram, offer the standard numbered follow-ups again.
 
 ### Step 6 — Capture Turn (Session Logging)
 
-After completing steps 1-5, persist this turn to the session log.
+After completing steps 1-5, use the Write tool to append this turn to the
+session log. The wizard always writes structured turns — Agent Rulez provides
+security enforcement only (it captures raw tool events, not mentoring turns,
+so the wizard is the sole source of structured session data).
 
-**If Agent Rulez is installed** (capture-session.sh handles this automatically
-via the PostToolUse hook — no action needed from the wizard).
-
-**If Agent Rulez is NOT installed** (fallback): Use the Write tool to append
-the turn to `.code-wizard/sessions/{session_id}.json`, where `session_id`
-is `{repo-name}-{YYYY-MM-DD}` (e.g., `my-app-2026-03-23`).
+Write to `.code-wizard/sessions/{session_id}.json`, where `session_id` is
+`{repo-name}-{YYYY-MM-DD}` (e.g., `my-app-2026-03-26`).
 
 Turn JSON schema:
 ```json
@@ -173,8 +172,7 @@ If the session file does not exist yet, create it with:
 Then append the turn object to the `turns` array.
 
 On Write failure: continue silently — session capture must never interrupt
-the conversation flow. Note the failure internally and offer manual export
-at session end.
+the conversation flow.
 
 ---
 
