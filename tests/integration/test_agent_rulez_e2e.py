@@ -20,6 +20,10 @@ Schema contract verified by this test:
   Hook events:      {hook_event_name, tool_name, tool_input, session_id, timestamp}
   Export consumes:  wizard turns only (question, anchor, explanation fields)
 
+Coverage:
+  Claude:   full capture/export e2e (test_agent_rulez_claude_capture_to_export)
+  OpenCode: full capture/export e2e (test_agent_rulez_opencode_capture_to_export) — skipped if opencode unavailable
+
 Run:  pytest -m slow tests/integration/test_agent_rulez_e2e.py -v
 Skip: included in default 'not slow' deselection via pyproject.toml addopts
 
@@ -30,8 +34,12 @@ Environment:
 
 import json
 import os
+import platform
 import shutil
 import subprocess
+import tarfile
+import traceback
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -71,6 +79,20 @@ def _probe_claude() -> bool:
         return False
 
 
+def _probe_opencode() -> bool:
+    """Check that opencode binary exists AND can run headlessly."""
+    if shutil.which("opencode") is None:
+        return False
+    try:
+        r = subprocess.run(
+            ["opencode", "run", "--dir", "/tmp", "echo hello"],
+            capture_output=True, text=True, timeout=30,
+        )
+        return r.returncode == 0
+    except Exception:
+        return False
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Session-scoped availability fixtures
 # ─────────────────────────────────────────────────────────────────────────────
@@ -84,6 +106,11 @@ def rulez_available() -> bool:
 @pytest.fixture(scope="session")
 def claude_available() -> bool:
     return _probe_claude()
+
+
+@pytest.fixture(scope="session")
+def opencode_available() -> bool:
+    return _probe_opencode()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -161,6 +188,76 @@ def integration_env(tmp_path) -> Dict[str, Path]:
     }
 
 
+@pytest.fixture
+def opencode_integration_env(tmp_path) -> Dict[str, Path]:
+    """Create a fully isolated integration folder for OpenCode testing.
+
+    Same layout as integration_env but installs with --for opencode:
+        tmp/
+          home/                   <- isolated HOME (plugin install + auth)
+            .claude/
+              auth.json           <- copied from real HOME (auth only, not plugins)
+            .opencode/            <- created by installer for opencode
+          project/                <- wizard project (copy of fixture)
+            src/main.py
+            README.md
+            .claude/              <- created by setup.sh (rulez hook, settings)
+            .opencode/            <- created by setup.sh for opencode
+            .code-wizard/         <- created by setup.sh (config, sessions, docs)
+
+    Nothing from this codebase's own .claude/ or .code-wizard/ is used.
+    """
+    home = tmp_path / "home"
+    isolated_claude = home / ".claude"
+    isolated_claude.mkdir(parents=True)
+
+    # Copy only auth credentials — not global plugins, settings, or history
+    real_claude = Path.home() / ".claude"
+    for auth_file in ("auth.json", ".credentials.json"):
+        src = real_claude / auth_file
+        if src.exists():
+            shutil.copy2(src, isolated_claude / auth_file)
+
+    # Install plugin from current checkout into isolated HOME (opencode variant)
+    install_result = subprocess.run(
+        ["ai-codebase-mentor", "install", "--for", "opencode"],
+        env={**os.environ, "HOME": str(home)},
+        capture_output=True, text=True, timeout=60,
+    )
+    if install_result.returncode != 0:
+        pytest.skip(
+            f"ai-codebase-mentor install --for opencode failed "
+            f"(rc={install_result.returncode}).\nstderr: {install_result.stderr}"
+        )
+
+    # Create isolated project from fixture
+    project = tmp_path / "project"
+    shutil.copytree(FIXTURE_PROJECT, project)
+
+    # Locate setup.sh inside the installed plugin cache
+    # Installer puts it at: ~/.claude/plugins/cache/codebase-mentor/codebase-wizard/{version}/
+    cache_plugin_dir = home / ".claude" / "plugins" / "cache" / "codebase-mentor" / "codebase-wizard"
+    if not cache_plugin_dir.exists():
+        pytest.skip(
+            f"Plugin cache directory not found: {cache_plugin_dir}\n"
+            f"ai-codebase-mentor install --for opencode may have failed silently."
+        )
+    version_dirs = sorted([d for d in cache_plugin_dir.iterdir() if d.is_dir()])
+    if not version_dirs:
+        pytest.skip(f"No versioned plugin directories found under {cache_plugin_dir}")
+    plugin_dir = version_dirs[-1]
+    plugin_setup_sh = plugin_dir / "skills" / "configuring-codebase-wizard" / "scripts" / "setup.sh"
+    if not plugin_setup_sh.exists():
+        pytest.skip(f"setup.sh not found in installed plugin: {plugin_setup_sh}")
+
+    return {
+        "home": home,
+        "project": project,
+        "setup_sh": plugin_setup_sh,
+        "plugin_dir": plugin_dir,
+    }
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # CLI helpers
 # ─────────────────────────────────────────────────────────────────────────────
@@ -200,6 +297,23 @@ def run_claude(
             "--max-budget-usd", str(budget),
         ],
         cwd=str(env["project"]),
+        capture_output=True, text=True, timeout=timeout,
+    )
+
+
+def run_opencode(
+    prompt: str,
+    env: Dict[str, Path],
+    timeout: int = 240,
+) -> subprocess.CompletedProcess:
+    """Run opencode with positional message args and --dir for project directory.
+
+    Uses positional message args (NOT --command which hangs silently per Phase 13 decision).
+    """
+    return subprocess.run(
+        ["opencode", "run", "--dir", str(env["project"]), prompt],
+        cwd=str(env["project"]),
+        env={**os.environ, "HOME": str(env["home"])},
         capture_output=True, text=True, timeout=timeout,
     )
 

@@ -45,3 +45,6 @@ firebase-debug.log
 # Wizard session storage (user-generated, not part of source)
 .code-wizard/
 .claude/code-wizard/
+
+# E2E test failure artifact bundles
+artifacts/
