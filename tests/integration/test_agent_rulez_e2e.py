@@ -157,6 +157,7 @@ def integration_env(tmp_path) -> Dict[str, Path]:
         "home": home,
         "project": project,
         "setup_sh": plugin_setup_sh,
+        "plugin_dir": plugin_dir,
     }
 
 
@@ -186,15 +187,19 @@ def run_claude(
     budget: float = 1.00,
     timeout: int = 240,
 ) -> subprocess.CompletedProcess:
-    """Run claude -p inside the isolated project with isolated HOME."""
+    """Run claude -p with plugin loaded from isolated install dir.
+
+    Uses --plugin-dir instead of HOME override so macOS keychain auth works.
+    The plugin files come from the current checkout's installed location.
+    """
     return subprocess.run(
         [
             "claude", "-p", prompt,
+            "--plugin-dir", str(env["plugin_dir"]),
             "--dangerously-skip-permissions",
             "--max-budget-usd", str(budget),
         ],
         cwd=str(env["project"]),
-        env=_env_for(env),
         capture_output=True, text=True, timeout=timeout,
     )
 
