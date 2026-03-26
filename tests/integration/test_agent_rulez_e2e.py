@@ -511,3 +511,71 @@ def test_agent_rulez_claude_capture_to_export(
 
     # ── Phase 5: Assert docs generated from session JSON ─────────────────────
     assert_phase5_docs(project, sessions)
+
+
+@pytest.mark.slow
+def test_opencode_setup_deploys_hooks_yaml(integration_env, rulez_available):
+    """Verify setup.sh opencode path writes .claude/hooks.yaml and deploys capture-session.sh.
+
+    This test verifies the OpenCode hook installation path of setup.sh:
+      - deploy_hooks() is called with runtime="opencode"
+      - .claude/hooks.yaml is written (rules file rulez reads at hook-fire time)
+      - capture-session.sh is deployed
+      - config.json is created
+
+    The `rulez opencode install` step may fail if opencode is not installed — that
+    is acceptable. We assert the artifacts created BEFORE the rulez call, not the
+    rulez registration itself (which is tested indirectly by the Claude-side test).
+
+    If setup.sh fails AND .claude/hooks.yaml was not created, the test fails —
+    indicating a regression in the opencode deploy_hooks() path.
+    """
+    if not rulez_available:
+        pytest.skip("rulez not installed — cannot test OpenCode setup path")
+
+    project = integration_env["project"]
+
+    # Run setup.sh with opencode runtime
+    setup_result = run_setup(integration_env, runtime="opencode")
+
+    # setup.sh may fail on `rulez opencode install` if opencode is not installed.
+    # Check if the pre-rulez artifacts were created regardless of exit code.
+    hooks_yaml = project / ".claude" / "hooks.yaml"
+    capture_sh = project / ".code-wizard" / "scripts" / "capture-session.sh"
+    config_json = project / ".code-wizard" / "config.json"
+
+    # If setup.sh failed AND none of the artifacts exist, it's a real regression.
+    artifacts_created = hooks_yaml.exists() or capture_sh.exists() or config_json.exists()
+    if setup_result.returncode != 0 and not artifacts_created:
+        pytest.fail(
+            f"setup.sh opencode path failed before creating any artifacts.\n"
+            f"Exit code: {setup_result.returncode}\n"
+            f"stdout: {setup_result.stdout}\nstderr: {setup_result.stderr}"
+        )
+
+    # If artifacts were created, verify them regardless of whether rulez step succeeded.
+    assert config_json.exists(), (
+        f"setup.sh did not create .code-wizard/config.json for opencode runtime.\n"
+        f"stdout: {setup_result.stdout}\nstderr: {setup_result.stderr}"
+    )
+    assert hooks_yaml.exists(), (
+        ".claude/hooks.yaml not created for opencode runtime.\n"
+        "deploy_hooks() must copy agent-rulez.yaml → .claude/hooks.yaml.\n"
+        f"stdout: {setup_result.stdout}\nstderr: {setup_result.stderr}"
+    )
+    assert capture_sh.exists(), (
+        ".code-wizard/scripts/capture-session.sh not deployed for opencode runtime.\n"
+        f"stdout: {setup_result.stdout}\nstderr: {setup_result.stderr}"
+    )
+
+    # Check .claude/hooks.yaml content
+    hooks_text = hooks_yaml.read_text()
+    assert "rules:" in hooks_text, (
+        ".claude/hooks.yaml missing 'rules:' top-level key — wrong schema deployed"
+    )
+
+    # If setup completed fully (rulez opencode install worked), verify output message
+    if setup_result.returncode == 0:
+        assert "OpenCode" in setup_result.stdout or "opencode" in setup_result.stdout.lower(), (
+            "setup.sh opencode output does not mention OpenCode"
+        )
