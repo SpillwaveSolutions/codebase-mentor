@@ -534,6 +534,206 @@ def assert_phase5_docs(project: Path, sessions_before_export: List[Dict[str, Any
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Failure artifact bundle helper
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+def _collect_failure_artifacts(
+    project: Path,
+    env: Dict[str, Path],
+    label: str,
+    subprocess_results: Dict[str, Any],
+    assertion_error: BaseException,
+) -> None:
+    """Create a comprehensive failure artifact bundle for CI diagnostics.
+
+    Writes to artifacts/opencode-rulez-failure-{timestamp}/ under the repo root.
+    Produces FAILURE_REPORT.md and a .tar.gz archive of the entire artifact dir.
+    """
+    artifact_dir = (
+        REPO_ROOT / "artifacts"
+        / f"{label}-rulez-failure-{datetime.now().strftime('%Y%m%dT%H%M%S')}"
+    )
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+
+    # ── Project snapshot ──────────────────────────────────────────────────────
+    try:
+        shutil.copytree(str(project), str(artifact_dir / "project-snapshot"))
+    except Exception:
+        pass
+
+    # ── Version info ──────────────────────────────────────────────────────────
+    version_info: Dict[str, str] = {}
+    version_cmds = [
+        ("rulez", ["rulez", "--version"]),
+        ("opencode", ["opencode", "--version"]),
+        ("ai-codebase-mentor", ["pip", "show", "ai-codebase-mentor"]),
+        ("python", ["python", "--version"]),
+    ]
+    for name, cmd in version_cmds:
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            version_info[name] = (r.stdout + r.stderr).strip()
+        except Exception as e:
+            version_info[name] = f"error: {e}"
+    try:
+        version_info["platform"] = platform.platform()
+    except Exception:
+        version_info["platform"] = "unknown"
+
+    # ── Subprocess results ────────────────────────────────────────────────────
+    proc_lines: List[str] = []
+    for step_name, result in subprocess_results.items():
+        if result is None:
+            proc_lines.append(f"## {step_name}: (not run)\n")
+            continue
+        proc_lines.append(f"## {step_name}")
+        proc_lines.append(f"returncode: {result.returncode}")
+        proc_lines.append(f"stdout:\n{result.stdout or '(empty)'}")
+        proc_lines.append(f"stderr:\n{result.stderr or '(empty)'}")
+        proc_lines.append("")
+    (artifact_dir / "subprocess-results.txt").write_text("\n".join(proc_lines))
+
+    # ── Config files ──────────────────────────────────────────────────────────
+    config_files = [
+        project / ".claude" / "hooks.yaml",
+        project / ".claude" / "settings.json",
+        project / ".code-wizard" / "config.json",
+        project / ".code-wizard" / "scripts" / "capture-session.sh",
+    ]
+    configs_dir = artifact_dir / "config-files"
+    configs_dir.mkdir(exist_ok=True)
+    for cfg in config_files:
+        if cfg.exists():
+            try:
+                dest = configs_dir / cfg.name
+                shutil.copy2(str(cfg), str(dest))
+            except Exception:
+                pass
+
+    # Copy all files under .opencode/
+    opencode_dir = project / ".opencode"
+    if opencode_dir.exists():
+        try:
+            shutil.copytree(str(opencode_dir), str(configs_dir / ".opencode"))
+        except Exception:
+            pass
+
+    # ── Diagnostics ───────────────────────────────────────────────────────────
+    diag_lines: List[str] = []
+    for diag_name, diag_cmd in [
+        ("rulez validate", ["rulez", "validate"]),
+        ("rulez opencode doctor", ["rulez", "opencode", "doctor"]),
+    ]:
+        try:
+            r = subprocess.run(
+                diag_cmd, capture_output=True, text=True, timeout=15, cwd=str(project)
+            )
+            diag_lines.append(f"## {diag_name} (rc={r.returncode})")
+            diag_lines.append(r.stdout + r.stderr)
+        except Exception as e:
+            diag_lines.append(f"## {diag_name}: error: {e}")
+    (artifact_dir / "diagnostics.txt").write_text("\n".join(diag_lines))
+
+    # ── Directory tree ────────────────────────────────────────────────────────
+    tree_lines: List[str] = []
+    for root, dirs, files in os.walk(project):
+        depth = len(Path(root).relative_to(project).parts)
+        indent = "  " * depth
+        tree_lines.append(f"{indent}{Path(root).name}/")
+        for f in sorted(files):
+            tree_lines.append(f"{indent}  {f}")
+    (artifact_dir / "dir-tree.txt").write_text("\n".join(tree_lines))
+
+    # ── Session files ─────────────────────────────────────────────────────────
+    sessions_src = project / ".code-wizard" / "sessions"
+    if sessions_src.exists():
+        try:
+            shutil.copytree(str(sessions_src), str(artifact_dir / "sessions"))
+        except Exception:
+            pass
+
+    docs_src = project / ".code-wizard" / "docs"
+    if docs_src.exists():
+        try:
+            shutil.copytree(str(docs_src), str(artifact_dir / "docs"))
+        except Exception:
+            pass
+
+    # ── Artifact file index ───────────────────────────────────────────────────
+    artifact_files = sorted(
+        str(p.relative_to(artifact_dir))
+        for p in artifact_dir.rglob("*")
+        if p.is_file()
+    )
+
+    # ── FAILURE_REPORT.md ─────────────────────────────────────────────────────
+    tb_str = "".join(traceback.format_exception(type(assertion_error), assertion_error, assertion_error.__traceback__))
+    failure_report = f"""# FAILURE REPORT: {label}-rulez e2e
+
+## Test Name
+
+`test_agent_rulez_{label}_capture_to_export`
+
+## Purpose
+
+Full capture-to-export pipeline e2e: setup → wizard session → session captured → export → docs generated.
+On failure, this artifact bundle is written for handoff-quality diagnostics.
+
+## Setup Steps Taken
+
+{chr(10).join(f"- {k}: rc={v.returncode if v is not None else 'N/A'}" for k, v in subprocess_results.items())}
+
+## Observed Failure
+
+```
+{str(assertion_error)}
+```
+
+### Traceback
+
+```
+{tb_str}
+```
+
+## Likely Failure Layer
+
+Based on which subprocess results are present:
+- setup missing → failure in Phase 1 (setup.sh)
+- wizard missing → failure in Phase 2 (wizard session)
+- export missing → failure in Phase 4 (export session)
+- all present → failure in Phase 3 or Phase 5 (assertion layer)
+
+## Reproduction Recipe
+
+```bash
+# Ensure rulez + {label} are installed and authenticated
+cd /path/to/codebase-mentor
+pytest -m slow tests/integration/test_agent_rulez_e2e.py::test_agent_rulez_{label}_capture_to_export -v -s
+```
+
+## Version Info
+
+{chr(10).join(f"- {k}: {v}" for k, v in version_info.items())}
+
+## Artifact File Index
+
+{chr(10).join(f"- {f}" for f in artifact_files)}
+"""
+    (artifact_dir / "FAILURE_REPORT.md").write_text(failure_report)
+
+    # ── Tarball ───────────────────────────────────────────────────────────────
+    tarball_path = artifact_dir.with_suffix(".tar.gz")
+    try:
+        with tarfile.open(str(tarball_path), "w:gz") as tar:
+            tar.add(str(artifact_dir), arcname=artifact_dir.name)
+    except Exception:
+        pass
+
+    print(f"\n[FAILURE ARTIFACT] {tarball_path}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Main integration test — Claude Code + Agent Rulez
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -693,3 +893,111 @@ def test_opencode_setup_deploys_hooks_yaml(integration_env, rulez_available):
         assert "OpenCode" in setup_result.stdout or "opencode" in setup_result.stdout.lower(), (
             "setup.sh opencode output does not mention OpenCode"
         )
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main integration test — OpenCode + Agent Rulez
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+@pytest.mark.slow
+def test_agent_rulez_opencode_capture_to_export(
+    opencode_integration_env, rulez_available, opencode_available
+):
+    """Full Agent Rulez pipeline with OpenCode: setup → wizard capture → export → docs.
+
+    On failure, a handoff-quality artifact bundle is written to artifacts/ for the
+    Agent Rulez project team.
+
+    Phase 1 — Setup (rulez + opencode):
+      setup.sh deploys .claude/hooks.yaml, registers rulez PostToolUse hook,
+      and configures .opencode/ directory for OpenCode runtime.
+
+    Phase 2 — Wizard session (opencode run):
+      Wizard runs in describe mode via opencode. Step 6 of the Answer Loop writes
+      structured turns to .code-wizard/sessions/{session_id}.json via the Write tool.
+
+    Phase 3 — Assert session captured:
+      .code-wizard/sessions/*.json must have wizard turns with 'question' field.
+      Agent Rulez hook events (tool_name, hook_event_name) must also be present.
+
+    Phase 4 — Export (opencode run):
+      Export skill reads session JSON and writes SESSION-TRANSCRIPT.md + CODEBASE.md.
+
+    Phase 5 — Assert docs:
+      Both files exist, have expected headings, contain fixture-specific content,
+      and docs session_id matches the session JSON.
+    """
+    if not rulez_available:
+        pytest.skip("rulez not installed")
+    if not opencode_available:
+        pytest.skip("opencode not available or cannot run headlessly")
+
+    project = opencode_integration_env["project"]
+    subprocess_results: Dict[str, Any] = {}
+    assertion_error: Optional[BaseException] = None
+
+    try:
+        # ── Phase 1: Setup ────────────────────────────────────────────────────
+        setup_result = run_setup(opencode_integration_env, runtime="opencode")
+        subprocess_results["setup"] = setup_result
+        assert setup_result.returncode == 0, (
+            f"setup.sh failed (rc={setup_result.returncode}).\n"
+            f"stdout: {setup_result.stdout}\nstderr: {setup_result.stderr}"
+        )
+        assert_phase1_setup(project)
+
+        # Also verify opencode-specific artifacts
+        opencode_dir = project / ".opencode"
+        assert opencode_dir.exists() or (project / ".claude" / "hooks.yaml").exists(), (
+            "Neither .opencode/ nor .claude/hooks.yaml found after opencode setup.\n"
+            "setup.sh opencode path must create at least one of these."
+        )
+
+        # ── Phase 2: Wizard session via opencode run ──────────────────────────
+        wizard_result = run_opencode(
+            "describe this codebase. Use describe mode. "
+            "Save each answer turn to the session log as you go. "
+            "Proceed without asking questions.",
+            opencode_integration_env,
+        )
+        subprocess_results["wizard"] = wizard_result
+        assert wizard_result.returncode == 0, (
+            f"opencode run wizard failed (rc={wizard_result.returncode}).\n"
+            f"stdout: {wizard_result.stdout}\nstderr: {wizard_result.stderr}"
+        )
+
+        # ── Phase 3: Assert session captured ──────────────────────────────────
+        sessions = assert_phase3_session_captured(project)
+        assert_phase3_rulez_fired(project)
+
+        # ── Phase 4: Export via opencode run ──────────────────────────────────
+        export_result = run_opencode(
+            "export the wizard session. Read the latest session JSON from "
+            ".code-wizard/sessions/ and generate SESSION-TRANSCRIPT.md and CODEBASE.md.",
+            opencode_integration_env,
+        )
+        subprocess_results["export"] = export_result
+        assert export_result.returncode == 0, (
+            f"opencode run export failed (rc={export_result.returncode}).\n"
+            f"stdout: {export_result.stdout}\nstderr: {export_result.stderr}"
+        )
+
+        # ── Phase 5: Assert docs generated from session JSON ──────────────────
+        assert_phase5_docs(project, sessions)
+
+    except (AssertionError, Exception) as exc:
+        assertion_error = exc
+        raise
+    finally:
+        if assertion_error is not None:
+            try:
+                _collect_failure_artifacts(
+                    project,
+                    opencode_integration_env,
+                    "opencode",
+                    subprocess_results,
+                    assertion_error,
+                )
+            except Exception:
+                pass  # never mask the real failure
