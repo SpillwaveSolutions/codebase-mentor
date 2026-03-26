@@ -313,6 +313,49 @@ def assert_phase3_session_captured(project: Path) -> List[Dict[str, Any]]:
     return all_sessions
 
 
+def assert_phase3_rulez_fired(project: Path) -> None:
+    """Phase 3b: verify Agent Rulez capture-session.sh actually recorded hook events.
+
+    Agent Rulez writes raw tool events to .code-wizard/sessions/{claude-session-id}.json
+    via capture-session.sh on PostToolUse. These events have a different schema from
+    wizard turns: they contain hook_event_name, tool_name, tool_input fields.
+
+    A test that only checks for wizard turns (question field) cannot detect whether
+    rulez hooks fired. This assertion closes that gap.
+    """
+    all_sessions = load_session_files(project)
+
+    # Collect all turns across all session files (wizard and rulez write to different files)
+    all_turns = [turn for s in all_sessions for turn in s.get("turns", [])]
+
+    # Look for turns shaped like Agent Rulez hook events
+    hook_event_turns = [
+        t for t in all_turns
+        if "hook_event_name" in t or "tool_name" in t
+    ]
+
+    assert hook_event_turns, (
+        "No Agent Rulez hook events found in .code-wizard/sessions/.\n"
+        "capture-session.sh must fire on PostToolUse and write raw tool events.\n"
+        "Fields expected: hook_event_name, tool_name, tool_input, session_id, timestamp\n"
+        f"Session files found: {len(all_sessions)}\n"
+        f"Turn fields across all sessions: {sorted({k for t in all_turns for k in t.keys()})}\n"
+        "Possible causes:\n"
+        "  1. rulez install did not register the PostToolUse hook\n"
+        "  2. capture-session.sh was not deployed to .code-wizard/scripts/\n"
+        "  3. .claude/hooks.yaml was not written (rulez reads this at hook-fire time)\n"
+        "  4. rulez binary not found on PATH during hook execution"
+    )
+
+    # At least one hook event must have tool_name — proves it fired on a real tool call
+    tool_events = [t for t in hook_event_turns if t.get("tool_name")]
+    assert tool_events, (
+        "Hook events exist but none have tool_name field.\n"
+        f"Hook event fields found: {sorted({k for t in hook_event_turns for k in t.keys()})}\n"
+        "Expected shape: {hook_event_name, tool_name, tool_input, session_id, timestamp}"
+    )
+
+
 def assert_phase5_docs(project: Path, sessions_before_export: List[Dict[str, Any]]) -> None:
     """Phase 5: verify export generated SESSION-TRANSCRIPT.md and CODEBASE.md.
 
@@ -433,6 +476,7 @@ def test_agent_rulez_claude_capture_to_export(
 
     # ── Phase 3: Assert session captured ──────────────────────────────────────
     sessions = assert_phase3_session_captured(project)
+    assert_phase3_rulez_fired(project)  # NEW: verify rulez hook events, not just wizard turns
 
     # SESSION-TRANSCRIPT.md must NOT exist yet — export generates it
     assert find_output(project, "SESSION-TRANSCRIPT.md") is None, (
