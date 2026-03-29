@@ -234,7 +234,7 @@ def test_all_fork_commands_get_subtask(installer, source_plugin_dir, tmp_path):
     expected_commands = {"codebase-wizard", "codebase-wizard-export", "codebase-wizard-setup"}
     assert set(data["command"].keys()) == expected_commands
     for cmd_name in expected_commands:
-        assert data["command"][cmd_name] == {"subtask": True}
+        assert data["command"][cmd_name] == {"subtask": True, "template": ""}
 
 
 def test_subtask_idempotent(installer, source_plugin_dir, tmp_path):
@@ -245,7 +245,7 @@ def test_subtask_idempotent(installer, source_plugin_dir, tmp_path):
     data = json.loads(json_path.read_text())
     assert len(data["command"]) == 3
     for cmd_name in ["codebase-wizard", "codebase-wizard-export", "codebase-wizard-setup"]:
-        assert data["command"][cmd_name] == {"subtask": True}
+        assert data["command"][cmd_name] == {"subtask": True, "template": ""}
 
 
 def test_subtask_merge_preserves_existing(installer, source_plugin_dir, tmp_path):

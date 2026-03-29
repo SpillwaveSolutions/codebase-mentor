@@ -64,6 +64,42 @@ Agent Rulez (https://github.com/SpillwaveSolutions/agent_rulez) provides the hoo
 
 The policy islands pattern (documented in the article provided) is the architectural model for permission management: skills contain automation logic, agents define permission boundaries, commands are thin wrappers that fork into agents.
 
+## Working Agreements
+
+### Test Work Policy
+
+A task that adds or modifies tests but does not run them is **incomplete**, not partially complete.
+
+- Writing the test file is step 1. Running it is step 2. Both are mandatory.
+- For e2e/integration/slow/live tests, step 2 means executing in the intended environment.
+- If a test cannot be run, the close state must be "blocked" with the exact missing prerequisite and the command to run once unblocked.
+- Skipped tests are unverified, not done.
+
+### Postconditions for Test Tasks
+
+Before marking any test task complete:
+- [ ] Test file created or updated
+- [ ] Relevant test command executed
+- [ ] Result observed (pass/fail/blocked — never "skipped")
+- [ ] Failures captured with logs/artifacts
+- [ ] Close-out includes: exact command, result, key output line
+
+### Verification Language
+
+Do not say "verified," "works," "passes," or "done" unless the test was executed in the current session with observed evidence.
+
+### PR Checklist
+
+If tests were added or changed in a PR:
+- [ ] Tests were executed locally
+- [ ] Exact command and result pasted in PR description
+
+### Run Commands
+
+- Fast suite: `pytest`
+- Integration/e2e: `scripts/run_integration_tests.sh`
+- OpenCode e2e with failure artifacts: `scripts/run_opencode_e2e_with_artifacts.sh`
+
 ## Constraints
 
 - **Platform**: Claude Code (v1.0 ✓), OpenCode (v1.2), Codex (v1.3), Gemini (v1.4), LangChain DeepAgent (v1.5)

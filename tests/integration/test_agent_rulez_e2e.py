@@ -25,7 +25,12 @@ Coverage:
   OpenCode: full capture/export e2e (test_agent_rulez_opencode_capture_to_export) — skipped if opencode unavailable
 
 Run:  pytest -m slow tests/integration/test_agent_rulez_e2e.py -v
+      scripts/run_integration_tests.sh
+      scripts/run_opencode_e2e_with_artifacts.sh  (OpenCode only, with failure artifacts)
 Skip: included in default 'not slow' deselection via pyproject.toml addopts
+
+IMPORTANT: Writing this test is not done until it has been executed.
+A skipped test is unverified, not done. See docs/testing.md.
 
 Environment:
   Each test gets an isolated folder with its own .claude/ and .opencode/.
@@ -218,6 +223,13 @@ def opencode_integration_env(tmp_path) -> Dict[str, Path]:
         if src.exists():
             shutil.copy2(src, isolated_claude / auth_file)
 
+    # Copy OpenCode config (has API keys for providers like Anthropic, Vertex, etc.)
+    real_opencode_config = Path.home() / ".config" / "opencode" / "opencode.json"
+    if real_opencode_config.exists():
+        isolated_opencode_dir = home / ".config" / "opencode"
+        isolated_opencode_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(real_opencode_config, isolated_opencode_dir / "opencode.json")
+
     # Install plugin from current checkout into isolated HOME (opencode variant)
     install_result = subprocess.run(
         ["ai-codebase-mentor", "install", "--for", "opencode"],
@@ -234,19 +246,16 @@ def opencode_integration_env(tmp_path) -> Dict[str, Path]:
     project = tmp_path / "project"
     shutil.copytree(FIXTURE_PROJECT, project)
 
-    # Locate setup.sh inside the installed plugin cache
-    # Installer puts it at: ~/.claude/plugins/cache/codebase-mentor/codebase-wizard/{version}/
-    cache_plugin_dir = home / ".claude" / "plugins" / "cache" / "codebase-mentor" / "codebase-wizard"
-    if not cache_plugin_dir.exists():
+    # Locate setup.sh inside the installed plugin directory.
+    # OpenCode installer puts files at: ~/.config/opencode/codebase-wizard/
+    # (NOT the Claude cache path ~/.claude/plugins/cache/...)
+    plugin_dir = home / ".config" / "opencode" / "codebase-wizard"
+    if not plugin_dir.exists():
         pytest.skip(
-            f"Plugin cache directory not found: {cache_plugin_dir}\n"
+            f"OpenCode plugin directory not found: {plugin_dir}\n"
             f"ai-codebase-mentor install --for opencode may have failed silently."
         )
-    version_dirs = sorted([d for d in cache_plugin_dir.iterdir() if d.is_dir()])
-    if not version_dirs:
-        pytest.skip(f"No versioned plugin directories found under {cache_plugin_dir}")
-    plugin_dir = version_dirs[-1]
-    plugin_setup_sh = plugin_dir / "skills" / "configuring-codebase-wizard" / "scripts" / "setup.sh"
+    plugin_setup_sh = plugin_dir / "skill" / "configuring-codebase-wizard" / "scripts" / "setup.sh"
     if not plugin_setup_sh.exists():
         pytest.skip(f"setup.sh not found in installed plugin: {plugin_setup_sh}")
 
@@ -309,11 +318,15 @@ def run_opencode(
     """Run opencode with positional message args and --dir for project directory.
 
     Uses positional message args (NOT --command which hangs silently per Phase 13 decision).
+    Uses the real HOME (not isolated) so OpenCode can access its provider config, model
+    routing, database, and auth. Project isolation is achieved via --dir pointing to the
+    isolated project directory.
     """
+    model = os.environ.get("OPENCODE_TEST_MODEL", "opencode/claude-sonnet-4-6")
     return subprocess.run(
-        ["opencode", "run", "--dir", str(env["project"]), prompt],
+        ["opencode", "run", "-m", model, "--dir", str(env["project"]), prompt],
         cwd=str(env["project"]),
-        env={**os.environ, "HOME": str(env["home"])},
+        env=dict(os.environ),  # real HOME — OpenCode needs its provider/auth config
         capture_output=True, text=True, timeout=timeout,
     )
 
@@ -342,8 +355,14 @@ def load_session_files(project: Path) -> List[Dict[str, Any]]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def assert_phase1_setup(project: Path) -> None:
-    """Phase 1: verify setup.sh created all required artifacts."""
+def assert_phase1_setup(project: Path, runtime: str = "claude") -> None:
+    """Phase 1: verify setup.sh created all required artifacts.
+
+    Args:
+        project: Path to the isolated project directory.
+        runtime: "claude" or "opencode" — determines which settings file to check
+                 for hook registration.
+    """
     # config.json — storage resolved
     config_path = project / ".code-wizard" / "config.json"
     assert config_path.exists(), "setup.sh did not create .code-wizard/config.json"
@@ -371,24 +390,37 @@ def assert_phase1_setup(project: Path) -> None:
     assert capture_sh.exists(), ".code-wizard/scripts/capture-session.sh not deployed"
     assert os.access(str(capture_sh), os.X_OK), "capture-session.sh not executable"
 
-    # .claude/settings.json — rulez hook registered (PostToolUse)
-    settings_path = project / ".claude" / "settings.json"
-    assert settings_path.exists(), (
-        ".claude/settings.json missing — rulez install did not register hook"
-    )
-    settings = json.loads(settings_path.read_text())
-    post_hooks = settings.get("hooks", {}).get("PostToolUse", [])
-    assert post_hooks, (
-        ".claude/settings.json has no PostToolUse hooks — rulez install failed"
-    )
-    hook_commands = [
-        h.get("command", "")
-        for entry in post_hooks
-        for h in entry.get("hooks", [])
-    ]
-    assert any("rulez" in cmd for cmd in hook_commands), (
-        f"PostToolUse hook does not reference rulez binary.\nFound: {hook_commands}"
-    )
+    if runtime == "claude":
+        # .claude/settings.json — rulez hook registered (PostToolUse)
+        settings_path = project / ".claude" / "settings.json"
+        assert settings_path.exists(), (
+            ".claude/settings.json missing — rulez install did not register hook"
+        )
+        settings = json.loads(settings_path.read_text())
+        post_hooks = settings.get("hooks", {}).get("PostToolUse", [])
+        assert post_hooks, (
+            ".claude/settings.json has no PostToolUse hooks — rulez install failed"
+        )
+        hook_commands = [
+            h.get("command", "")
+            for entry in post_hooks
+            for h in entry.get("hooks", [])
+        ]
+        assert any("rulez" in cmd for cmd in hook_commands), (
+            f"PostToolUse hook does not reference rulez binary.\nFound: {hook_commands}"
+        )
+    elif runtime == "opencode":
+        # .opencode/settings.json — cch hook registered for OpenCode events
+        settings_path = project / ".opencode" / "settings.json"
+        assert settings_path.exists(), (
+            ".opencode/settings.json missing — cch/rulez install for opencode failed"
+        )
+        settings = json.loads(settings_path.read_text())
+        # OpenCode hooks use event-based registration (file.edited, tool.execute.*, etc.)
+        hooks = settings.get("hooks", [])
+        assert hooks, (
+            ".opencode/settings.json has no hooks — cch install for opencode failed"
+        )
 
 
 def assert_phase3_session_captured(project: Path) -> List[Dict[str, Any]]:
@@ -504,12 +536,21 @@ def assert_phase5_docs(project: Path, sessions_before_export: List[Dict[str, Any
     assert len(codebase_text) > 100, (
         f"CODEBASE.md too small ({len(codebase_text)} bytes)"
     )
-    has_section = any(
-        h in codebase_text
-        for h in ("## Overview", "# Overview", "## Entry Points", "## Constraints")
+    # Check for at least one markdown heading (any level) — LLM output is
+    # non-deterministic, so we only verify structural presence, not exact text.
+    has_heading = "\n#" in codebase_text or codebase_text.startswith("#")
+    assert has_heading, (
+        f"CODEBASE.md has no markdown headings at all.\n"
+        f"Preview: {codebase_text[:500]}"
     )
-    assert has_section, (
-        f"CODEBASE.md missing expected section headings (Overview/Entry Points/Constraints).\n"
+    # Verify it references the fixture project content (not generic boilerplate)
+    has_fixture_content = (
+        "calculate" in codebase_text.lower()
+        or "main.py" in codebase_text
+        or "sample" in codebase_text.lower()
+    )
+    assert has_fixture_content, (
+        f"CODEBASE.md does not reference fixture content (calculate/main.py/sample).\n"
         f"Preview: {codebase_text[:500]}"
     )
 
@@ -945,7 +986,7 @@ def test_agent_rulez_opencode_capture_to_export(
             f"setup.sh failed (rc={setup_result.returncode}).\n"
             f"stdout: {setup_result.stdout}\nstderr: {setup_result.stderr}"
         )
-        assert_phase1_setup(project)
+        assert_phase1_setup(project, runtime="opencode")
 
         # Also verify opencode-specific artifacts
         opencode_dir = project / ".opencode"
@@ -965,6 +1006,11 @@ def test_agent_rulez_opencode_capture_to_export(
         assert wizard_result.returncode == 0, (
             f"opencode run wizard failed (rc={wizard_result.returncode}).\n"
             f"stdout: {wizard_result.stdout}\nstderr: {wizard_result.stderr}"
+        )
+        # OpenCode may return rc=0 even on auth/model errors — check stderr
+        assert "Error:" not in wizard_result.stderr, (
+            f"opencode run returned rc=0 but stderr contains errors.\n"
+            f"stderr: {wizard_result.stderr}"
         )
 
         # ── Phase 3: Assert session captured ──────────────────────────────────

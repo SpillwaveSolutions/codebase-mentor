@@ -432,7 +432,7 @@ class OpenCodeInstaller(RuntimeInstaller):
         if "command" not in data:
             data["command"] = {}
         for cmd_name in fork_commands:
-            data["command"][cmd_name] = {"subtask": True}
+            data["command"][cmd_name] = {"subtask": True, "template": ""}
         json_path.parent.mkdir(parents=True, exist_ok=True)
         with json_path.open("w") as f:
             json.dump(data, f, indent=2)
