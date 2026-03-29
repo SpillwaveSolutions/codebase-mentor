@@ -48,36 +48,35 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GEMINI-01 | TBD | Pending |
-| GEMINI-02 | TBD | Pending |
-| GEMINI-03 | TBD | Pending |
-| GEMINI-04 | TBD | Pending |
-| GEMINI-05 | TBD | Pending |
-| GEMINI-06 | TBD | Pending |
-| GEMINI-07 | TBD | Pending |
-| GEMINI-08 | TBD | Pending |
-| GEMINI-09 | TBD | Pending |
-| GEMINI-10 | TBD | Pending |
-| GEMINI-11 | TBD | Pending |
-| GEMINI-12 | TBD | Pending |
-| GEMINI-13 | TBD | Pending |
-| GEMINI-14 | TBD | Pending |
-| GEMINI-15 | TBD | Pending |
-
-| E2E-01 | TBD | Pending |
-| E2E-02 | TBD | Pending |
-| E2E-03 | TBD | Pending |
-| E2E-04 | TBD | Pending |
-| E2E-05 | TBD | Pending |
-| E2E-06 | TBD | Pending |
-| E2E-07 | TBD | Pending |
-| E2E-08 | TBD | Pending |
+| GEMINI-01 | Phase 14 | Pending |
+| GEMINI-02 | Phase 14 | Pending |
+| GEMINI-03 | Phase 14 | Pending |
+| GEMINI-04 | Phase 14 | Pending |
+| GEMINI-05 | Phase 14 | Pending |
+| GEMINI-06 | Phase 14 | Pending |
+| GEMINI-07 | Phase 14 | Pending |
+| GEMINI-08 | Phase 14 | Pending |
+| GEMINI-09 | Phase 14 | Pending |
+| GEMINI-10 | Phase 14 | Pending |
+| GEMINI-11 | Phase 14 | Pending |
+| GEMINI-12 | Phase 14 | Pending |
+| GEMINI-13 | Phase 16 | Pending |
+| GEMINI-14 | Phase 16 | Pending |
+| GEMINI-15 | Phase 14 | Pending |
+| E2E-01 | Phase 15 | Pending |
+| E2E-02 | Phase 15 | Pending |
+| E2E-03 | Phase 15 | Pending |
+| E2E-04 | Phase 15 | Pending |
+| E2E-05 | Phase 15 | Pending |
+| E2E-06 | Phase 15 | Pending |
+| E2E-07 | Phase 15 | Pending |
+| E2E-08 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 23 total
-- Mapped to phases: 0
-- Unmapped: 23 ⚠️
+- Mapped to phases: 23
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-29*
-*Last updated: 2026-03-29 after initial definition*
+*Last updated: 2026-03-29 — traceability filled after roadmap creation*
