@@ -23,6 +23,17 @@
 - [ ] **GEMINI-14**: `--for all` includes Gemini in runtime iteration
 - [ ] **GEMINI-15**: TDD test suite — covers all conversion rules, install/uninstall/status, tool mappings, TOML output
 
+### E2E Integration Tests
+
+- [ ] **E2E-01**: CliRunner e2e tests for `install --for gemini` — verify file output in temp dir (global + project)
+- [ ] **E2E-02**: CliRunner e2e tests for `uninstall --for gemini` — verify clean removal
+- [ ] **E2E-03**: CliRunner e2e tests for `status` — verify Gemini install state reporting
+- [ ] **E2E-04**: Verify generated TOML command files parse correctly (valid TOML syntax)
+- [ ] **E2E-05**: Verify agent files have correct `tools:` array with Gemini snake_case names
+- [ ] **E2E-06**: Verify `--for all` includes Gemini alongside Claude and OpenCode
+- [ ] **E2E-07**: Live Gemini CLI integration test — `gemini` headless invocation with fixture project, verify wizard output (marked `@pytest.mark.slow`, failure artifact bundle on failure)
+- [ ] **E2E-08**: All e2e tests MUST be executed and results reported (per testing policy — writing is step 1, running is step 2)
+
 ## Out of Scope (v1.3)
 
 | Feature | Reason |
@@ -53,10 +64,19 @@
 | GEMINI-14 | TBD | Pending |
 | GEMINI-15 | TBD | Pending |
 
+| E2E-01 | TBD | Pending |
+| E2E-02 | TBD | Pending |
+| E2E-03 | TBD | Pending |
+| E2E-04 | TBD | Pending |
+| E2E-05 | TBD | Pending |
+| E2E-06 | TBD | Pending |
+| E2E-07 | TBD | Pending |
+| E2E-08 | TBD | Pending |
+
 **Coverage:**
-- v1.3 requirements: 15 total
+- v1.3 requirements: 23 total
 - Mapped to phases: 0
-- Unmapped: 15 ⚠️
+- Unmapped: 23 ⚠️
 
 ---
 *Requirements defined: 2026-03-29*
