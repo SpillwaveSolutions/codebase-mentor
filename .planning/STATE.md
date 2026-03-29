@@ -1,8 +1,8 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
+milestone: v1.3
+milestone_name: Gemini CLI Converter
+status: defining-requirements
 last_updated: "2026-03-29T01:39:13.457Z"
 progress:
   total_phases: 13
@@ -15,8 +15,10 @@ progress:
 
 ## Current Position
 
-Phase: 13 (live-wizard-cli-integration-tests) — COMPLETE
-Plan: 1 of 1 (DONE)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements for v1.3
+Last activity: 2026-03-29 — Milestone v1.3 started
 
 ## Project Reference
 

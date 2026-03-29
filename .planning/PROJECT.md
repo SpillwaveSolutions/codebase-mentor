@@ -1,10 +1,16 @@
 # Codebase Wizard
 
-## Current State: v1.0 Shipped (2026-03-29)
+## Current Milestone: v1.3 — Gemini CLI Converter
 
-**Shipped:** 13 phases, 17 plans, 4079 LOC Python, 122 commits over 10 days
-**Published:** `pip install ai-codebase-mentor` (v1.2.0 on PyPI)
-**Next milestone:** Not yet planned — run `/gsd:new-milestone` to start
+**Goal:** Add a Gemini CLI runtime converter (`gemini.py`) so `ai-codebase-mentor install --for gemini` generates Gemini-native files, following the same monorepo + converter pattern as Claude and OpenCode.
+
+**Target features:**
+- `gemini.py` — converts Claude Code plugin format to Gemini CLI native format
+- `ai-codebase-mentor install --for gemini` works end-to-end with clean install/uninstall
+- TDD test suite for the Gemini converter
+- CLI wiring: `--for gemini`, `--for all` includes Gemini, status reporting
+
+**Prior milestone:** v1.0 shipped 2026-03-29 (13 phases, 17 plans, 4079 LOC, PyPI v1.2.0)
 
 ## What This Is
 
@@ -101,4 +107,4 @@ Before marking any test task complete:
 | Write-tool fallback for session capture | Works regardless of Agent Rulez hook state | ✓ Good — Phase 10 |
 
 ---
-*Last updated: 2026-03-29 after v1.0 milestone*
+*Last updated: 2026-03-29 — Milestone v1.3 started: Gemini CLI converter*
