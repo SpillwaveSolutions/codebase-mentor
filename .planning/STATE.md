@@ -151,6 +151,11 @@ None currently.
 
 ## Accumulated Context
 
+### Pending Todos
+
+- [ ] Agent Rulez hooks not installed by codebase-wizard-setup (2026-03-25)
+- [ ] OpenCode skill activation gap - wizard not invoked (2026-03-29)
+
 ### Roadmap Evolution
 
 - Phase 4 added: Claude Code plugin manifest and marketplace listing
