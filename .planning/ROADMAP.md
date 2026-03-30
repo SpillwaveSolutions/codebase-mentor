@@ -123,10 +123,11 @@ Plans:
   3. Command files are written as valid TOML with `.toml` extension
   4. `${VAR}` patterns, `<sub>` tags, and `~/.claude` paths are all rewritten for Gemini compatibility
   5. `ai-codebase-mentor status` reports Gemini install state; `--for all` includes Gemini; uninstall removes the directory cleanly
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 14-01: TDD — gemini.py converter with test_gemini_installer.py (RED→GREEN all conversion rules)
+- [ ] 14-01-PLAN.md — TDD: GeminiInstaller converter + test suite (RED->GREEN all conversion rules)
+- [ ] 14-02-PLAN.md — CLI wiring: register GeminiInstaller in _get_converters()
 
 ### Phase 15: Gemini E2E Integration Tests
 **Goal**: CliRunner and live Gemini CLI tests confirm end-to-end install correctness
@@ -178,6 +179,6 @@ Plans:
 | 11. Wizard UX | v1.0 | 1/1 | Complete | 2026-03-23 |
 | 12. E2E Installer Tests | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 13. Live CLI Tests | v1.0 | 1/1 | Complete | 2026-03-26 |
-| 14. Gemini Converter | v1.3 | 0/1 | Not started | - |
+| 14. Gemini Converter | v1.3 | 0/2 | Not started | - |
 | 15. Gemini E2E Tests | v1.3 | 0/2 | Not started | - |
 | 16. CLI Wiring + v1.3.0 | v1.3 | 0/1 | Not started | - |
