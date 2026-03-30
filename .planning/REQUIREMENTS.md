@@ -60,8 +60,8 @@
 | GEMINI-10 | Phase 14 | Pending |
 | GEMINI-11 | Phase 14 | Pending |
 | GEMINI-12 | Phase 14 | Pending |
-| GEMINI-13 | Phase 16 | Pending |
-| GEMINI-14 | Phase 16 | Pending |
+| GEMINI-13 | Phase 14 | Pending |
+| GEMINI-14 | Phase 14 | Pending |
 | GEMINI-15 | Phase 14 | Pending |
 | E2E-01 | Phase 15 | Pending |
 | E2E-02 | Phase 15 | Pending |
