@@ -23,9 +23,9 @@ def main():
 
 @main.command()
 @click.option("--for", "runtime", required=True,
-              help="Target runtime: claude, opencode, all")
+              help="Target runtime: claude, opencode, gemini, all")
 @click.option("--project", is_flag=True, default=False,
-              help="Install per-project (./plugins/) instead of global (~/.claude/plugins/).")
+              help="Install per-project instead of global.")
 def install(runtime, project):
     """Install the Codebase Wizard plugin."""
     converters = _get_converters()
@@ -46,7 +46,7 @@ def install(runtime, project):
 
 @main.command()
 @click.option("--for", "runtime", required=True,
-              help="Target runtime: claude, opencode, all")
+              help="Target runtime: claude, opencode, gemini, all")
 @click.option("--project", is_flag=True, default=False,
               help="Uninstall per-project install instead of global.")
 def uninstall(runtime, project):
