@@ -19,8 +19,8 @@
 - [x] **GEMINI-10**: Path rewriting — `~/.claude` → `~/.gemini`, `$HOME/.claude` → `$HOME/.gemini` in all content
 - [x] **GEMINI-11**: Skills copied verbatim to `skill/` directory (runtime-agnostic, singular directory name)
 - [x] **GEMINI-12**: Clean uninstall — removes installed directory; no-op if not installed
-- [ ] **GEMINI-13**: Status reporting — `ai-codebase-mentor status` includes Gemini install state
-- [ ] **GEMINI-14**: `--for all` includes Gemini in runtime iteration
+- [x] **GEMINI-13**: Status reporting — `ai-codebase-mentor status` includes Gemini install state
+- [x] **GEMINI-14**: `--for all` includes Gemini in runtime iteration
 - [x] **GEMINI-15**: TDD test suite — covers all conversion rules, install/uninstall/status, tool mappings, TOML output
 
 ### E2E Integration Tests
@@ -60,8 +60,8 @@
 | GEMINI-10 | Phase 14 | Complete |
 | GEMINI-11 | Phase 14 | Complete |
 | GEMINI-12 | Phase 14 | Complete |
-| GEMINI-13 | Phase 14 | Pending |
-| GEMINI-14 | Phase 14 | Pending |
+| GEMINI-13 | Phase 14 | Complete |
+| GEMINI-14 | Phase 14 | Complete |
 | GEMINI-15 | Phase 14 | Complete |
 | E2E-01 | Phase 15 | Pending |
 | E2E-02 | Phase 15 | Pending |
