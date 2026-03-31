@@ -56,6 +56,20 @@ def _probe_opencode() -> bool:
         return False
 
 
+def _probe_gemini() -> bool:
+    """Return True if gemini -p can make a real API call."""
+    if shutil.which("gemini") is None:
+        return False
+    try:
+        r = subprocess.run(
+            ["gemini", "-p", "Say only: OK", "--approval-mode", "yolo", "-o", "text"],
+            capture_output=True, text=True, timeout=30,
+        )
+        return r.returncode == 0
+    except Exception:
+        return False
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Session-scoped auth fixtures — probes run once per session, only under -m slow
 # ─────────────────────────────────────────────────────────────────────────────
@@ -69,6 +83,11 @@ def claude_available() -> bool:
 @pytest.fixture(scope="session")
 def opencode_available() -> bool:
     return _probe_opencode()
+
+
+@pytest.fixture(scope="session")
+def gemini_available() -> bool:
+    return _probe_gemini()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -185,6 +204,17 @@ def run_opencode(
     """Run opencode run in headless mode. Uses --dir to set working directory."""
     return subprocess.run(
         ["opencode", "run", message, "--dir", str(cwd)],
+        capture_output=True, text=True, timeout=timeout,
+    )
+
+
+def run_gemini(
+    prompt: str, cwd: Path, timeout: int = 180
+) -> subprocess.CompletedProcess:
+    """Run gemini -p in headless mode with auto-approve."""
+    return subprocess.run(
+        ["gemini", "-p", prompt, "--approval-mode", "yolo", "-o", "text"],
+        cwd=str(cwd),
         capture_output=True, text=True, timeout=timeout,
     )
 
@@ -345,4 +375,69 @@ def test_opencode_skip_when_no_auth(opencode_available):
         pytest.skip("opencode not available -- skip logic confirmed working")
     assert shutil.which("opencode") is not None, (
         "opencode_available=True but shutil.which('opencode') returned None -- inconsistent state"
+    )
+
+
+@pytest.mark.slow
+def test_gemini_describe_creates_transcript(wizard_project, gemini_available):
+    """WIZARD-06: gemini -p describe mode produces wizard output referencing fixture project.
+
+    Uses --project install to avoid HOME override complexity. Gemini discovers
+    project-local config (.gemini/) automatically. "Skill conflict detected" warnings
+    are expected and benign.
+    """
+    if not gemini_available:
+        pytest.skip("gemini not available or not authenticated")
+
+    # Install wizard for Gemini into the fixture project (--project mode)
+    install_result = subprocess.run(
+        ["ai-codebase-mentor", "install", "--for", "gemini", "--project"],
+        cwd=str(wizard_project),
+        capture_output=True, text=True, timeout=60,
+    )
+    assert install_result.returncode == 0, (
+        f"ai-codebase-mentor install --for gemini --project failed.\n"
+        f"stdout: {install_result.stdout}\nstderr: {install_result.stderr}"
+    )
+
+    # Run gemini headless against the fixture project
+    result = run_gemini(
+        "describe this codebase. Proceed without asking questions.",
+        cwd=wizard_project,
+    )
+    assert result.returncode == 0, (
+        f"gemini -p failed.\nstdout: {result.stdout}\nstderr: {result.stderr}"
+    )
+
+    # Gemini should have produced output mentioning fixture-specific content.
+    # The fixture project has src/main.py with calculate(). Gemini may reference
+    # these in stdout (it doesn't write to .code-wizard/ like Claude does).
+    combined_output = result.stdout + result.stderr
+    assert len(combined_output) > 100, (
+        f"gemini -p output too small ({len(combined_output)} chars).\n"
+        f"stdout: {result.stdout}\nstderr: {result.stderr}"
+    )
+    # At minimum, gemini should have read the project. Check for fixture-specific content.
+    # Accept either direct code references or project structure mentions.
+    has_fixture_content = any(
+        marker in combined_output.lower()
+        for marker in ("calculate", "main.py", "sample", "wizard", "src/")
+    )
+    assert has_fixture_content, (
+        f"gemini output does not mention fixture project content.\n"
+        f"Expected one of: calculate, main.py, sample, wizard, src/\n"
+        f"stdout: {result.stdout[:500]}\nstderr: {result.stderr[:500]}"
+    )
+
+
+@pytest.mark.slow
+def test_gemini_skip_when_no_auth(gemini_available):
+    """WIZARD-07: Skip logic probe runs without crashing when gemini not available."""
+    assert isinstance(gemini_available, bool), (
+        "_probe_gemini() did not return a bool -- probe function is broken"
+    )
+    if not gemini_available:
+        pytest.skip("gemini not available -- skip logic confirmed working")
+    assert shutil.which("gemini") is not None, (
+        "gemini_available=True but shutil.which('gemini') returned None -- inconsistent state"
     )
