@@ -6,12 +6,13 @@ from ai_codebase_mentor import __version__
 
 
 # Registry of supported runtimes to converter classes.
-# v1.0: claude only. v1.2 adds opencode, v1.3 adds codex, v1.4 adds gemini.
+# v1.0: claude only. v1.2 adds opencode, v1.3 adds gemini.
 def _get_converters():
     """Lazy import converters to avoid import errors if optional deps missing."""
     from ai_codebase_mentor.converters.claude import ClaudeInstaller
     from ai_codebase_mentor.converters.opencode import OpenCodeInstaller
-    return {"claude": ClaudeInstaller, "opencode": OpenCodeInstaller}
+    from ai_codebase_mentor.converters.gemini import GeminiInstaller
+    return {"claude": ClaudeInstaller, "opencode": OpenCodeInstaller, "gemini": GeminiInstaller}
 
 
 @click.group()
