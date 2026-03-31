@@ -7,21 +7,21 @@
 
 ### Gemini Converter
 
-- [ ] **GEMINI-01**: `ai-codebase-mentor install --for gemini` writes converted plugin to `~/.gemini/codebase-wizard/`
-- [ ] **GEMINI-02**: `ai-codebase-mentor install --for gemini --project` writes to `./.gemini/codebase-wizard/`
-- [ ] **GEMINI-03**: Agent frontmatter conversion — `allowed_tools:` array → `tools:` array with Gemini snake_case names
-- [ ] **GEMINI-04**: Tool name mapping — 10 explicit mappings (Read→read_file, Write→write_file, Edit→replace, Bash→run_shell_command, Glob→glob, Grep→search_file_content, WebSearch→google_web_search, WebFetch→web_fetch, TodoWrite→write_todos, AskUserQuestion→ask_user)
-- [ ] **GEMINI-05**: Agent `color:` field stripped (Gemini validator rejects unknown fields)
-- [ ] **GEMINI-06**: `Task` and `mcp__*` tools excluded from agent tool lists (auto-registered/auto-discovered by Gemini)
-- [ ] **GEMINI-07**: Command files converted from Markdown+YAML to TOML format (`.toml` extension)
-- [ ] **GEMINI-08**: `${VAR}` patterns converted to `$VAR` in agent bodies (Gemini template engine conflict)
-- [ ] **GEMINI-09**: `<sub>` HTML tags converted to italic `*(text)*` in output (terminals can't render subscript)
-- [ ] **GEMINI-10**: Path rewriting — `~/.claude` → `~/.gemini`, `$HOME/.claude` → `$HOME/.gemini` in all content
-- [ ] **GEMINI-11**: Skills copied verbatim to `skill/` directory (runtime-agnostic, singular directory name)
-- [ ] **GEMINI-12**: Clean uninstall — removes installed directory; no-op if not installed
+- [x] **GEMINI-01**: `ai-codebase-mentor install --for gemini` writes converted plugin to `~/.gemini/codebase-wizard/`
+- [x] **GEMINI-02**: `ai-codebase-mentor install --for gemini --project` writes to `./.gemini/codebase-wizard/`
+- [x] **GEMINI-03**: Agent frontmatter conversion — `allowed_tools:` array → `tools:` array with Gemini snake_case names
+- [x] **GEMINI-04**: Tool name mapping — 10 explicit mappings (Read→read_file, Write→write_file, Edit→replace, Bash→run_shell_command, Glob→glob, Grep→search_file_content, WebSearch→google_web_search, WebFetch→web_fetch, TodoWrite→write_todos, AskUserQuestion→ask_user)
+- [x] **GEMINI-05**: Agent `color:` field stripped (Gemini validator rejects unknown fields)
+- [x] **GEMINI-06**: `Task` and `mcp__*` tools excluded from agent tool lists (auto-registered/auto-discovered by Gemini)
+- [x] **GEMINI-07**: Command files converted from Markdown+YAML to TOML format (`.toml` extension)
+- [x] **GEMINI-08**: `${VAR}` patterns converted to `$VAR` in agent bodies (Gemini template engine conflict)
+- [x] **GEMINI-09**: `<sub>` HTML tags converted to italic `*(text)*` in output (terminals can't render subscript)
+- [x] **GEMINI-10**: Path rewriting — `~/.claude` → `~/.gemini`, `$HOME/.claude` → `$HOME/.gemini` in all content
+- [x] **GEMINI-11**: Skills copied verbatim to `skill/` directory (runtime-agnostic, singular directory name)
+- [x] **GEMINI-12**: Clean uninstall — removes installed directory; no-op if not installed
 - [ ] **GEMINI-13**: Status reporting — `ai-codebase-mentor status` includes Gemini install state
 - [ ] **GEMINI-14**: `--for all` includes Gemini in runtime iteration
-- [ ] **GEMINI-15**: TDD test suite — covers all conversion rules, install/uninstall/status, tool mappings, TOML output
+- [x] **GEMINI-15**: TDD test suite — covers all conversion rules, install/uninstall/status, tool mappings, TOML output
 
 ### E2E Integration Tests
 
@@ -48,21 +48,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GEMINI-01 | Phase 14 | Pending |
-| GEMINI-02 | Phase 14 | Pending |
-| GEMINI-03 | Phase 14 | Pending |
-| GEMINI-04 | Phase 14 | Pending |
-| GEMINI-05 | Phase 14 | Pending |
-| GEMINI-06 | Phase 14 | Pending |
-| GEMINI-07 | Phase 14 | Pending |
-| GEMINI-08 | Phase 14 | Pending |
-| GEMINI-09 | Phase 14 | Pending |
-| GEMINI-10 | Phase 14 | Pending |
-| GEMINI-11 | Phase 14 | Pending |
-| GEMINI-12 | Phase 14 | Pending |
+| GEMINI-01 | Phase 14 | Complete |
+| GEMINI-02 | Phase 14 | Complete |
+| GEMINI-03 | Phase 14 | Complete |
+| GEMINI-04 | Phase 14 | Complete |
+| GEMINI-05 | Phase 14 | Complete |
+| GEMINI-06 | Phase 14 | Complete |
+| GEMINI-07 | Phase 14 | Complete |
+| GEMINI-08 | Phase 14 | Complete |
+| GEMINI-09 | Phase 14 | Complete |
+| GEMINI-10 | Phase 14 | Complete |
+| GEMINI-11 | Phase 14 | Complete |
+| GEMINI-12 | Phase 14 | Complete |
 | GEMINI-13 | Phase 14 | Pending |
 | GEMINI-14 | Phase 14 | Pending |
-| GEMINI-15 | Phase 14 | Pending |
+| GEMINI-15 | Phase 14 | Complete |
 | E2E-01 | Phase 15 | Pending |
 | E2E-02 | Phase 15 | Pending |
 | E2E-03 | Phase 15 | Pending |

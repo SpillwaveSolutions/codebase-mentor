@@ -179,6 +179,6 @@ Plans:
 | 11. Wizard UX | v1.0 | 1/1 | Complete | 2026-03-23 |
 | 12. E2E Installer Tests | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 13. Live CLI Tests | v1.0 | 1/1 | Complete | 2026-03-26 |
-| 14. Gemini Converter | v1.3 | 0/2 | Not started | - |
+| 14. Gemini Converter | 1/2 | In Progress|  | - |
 | 15. Gemini E2E Tests | v1.3 | 0/2 | Not started | - |
 | 16. CLI Wiring + v1.3.0 | v1.3 | 0/1 | Not started | - |
