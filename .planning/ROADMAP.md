@@ -139,11 +139,11 @@ Plans:
   3. Generated agent files contain only valid Gemini snake_case tool names
   4. `--for all` CliRunner test confirms Gemini files appear alongside Claude and OpenCode output
   5. Live `gemini` headless test (marked `@pytest.mark.slow`) runs against the fixture project and produces wizard output; failure artifact bundle created on failure
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 15-01: CliRunner E2E tests (E2E-01 through E2E-06, E2E-08) — all executed and results reported
-- [ ] 15-02: Live Gemini CLI integration test (E2E-07) — slow test with failure artifact bundle
+- [ ] 15-01-PLAN.md — CliRunner E2E tests (E2E-01 through E2E-06, E2E-08)
+- [ ] 15-02-PLAN.md — Live Gemini CLI integration test (E2E-07) with failure artifact bundle
 
 ### Phase 16: CLI Wiring + Version Bump
 **Goal**: `--for gemini` is fully wired into the CLI and the package ships as v1.3.0 on PyPI
@@ -180,5 +180,5 @@ Plans:
 | 12. E2E Installer Tests | v1.0 | 2/2 | Complete | 2026-03-25 |
 | 13. Live CLI Tests | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 14. Gemini Converter | 2/2 | Complete    | 2026-03-31 | - |
-| 15. Gemini E2E Tests | v1.3 | 0/2 | Not started | - |
+| 15. Gemini E2E Tests | v1.3 | 0/2 | Planned | - |
 | 16. CLI Wiring + v1.3.0 | v1.3 | 0/1 | Not started | - |
