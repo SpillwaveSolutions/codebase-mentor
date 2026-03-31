@@ -61,6 +61,9 @@ def test_cli_install_all(cli_env):
     assert (
         cli_env / "cwd" / "plugins" / "codebase-wizard"
     ).exists(), "plugins/codebase-wizard/ not found after install --for all"
+    assert (
+        cli_env / "cwd" / ".gemini" / "codebase-wizard"
+    ).exists(), ".gemini/codebase-wizard/ not found after install --for all"
 
 
 def test_cli_uninstall_opencode_project(cli_env):
@@ -86,6 +89,9 @@ def test_cli_status_after_install_all(cli_env):
     )
     assert "opencode: installed" in result.output, (
         f"Expected 'opencode: installed' in status output.\nOutput:\n{result.output}"
+    )
+    assert "gemini: installed" in result.output, (
+        f"Expected 'gemini: installed' in status output.\nOutput:\n{result.output}"
     )
 
 
