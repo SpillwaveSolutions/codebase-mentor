@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** - Phases 1-13 (shipped 2026-03-29)
-- 🚧 **v1.3 Gemini CLI Converter** - Phases 14-16 (in progress)
+- ✅ **v1.3 Gemini CLI Converter** - Phases 14-16 (shipped 2026-03-31)
 
 ## Phases
 
@@ -107,7 +107,7 @@ Plans:
 
 ---
 
-### 🚧 v1.3 Gemini CLI Converter (In Progress)
+### ✅ v1.3 Gemini CLI Converter (Shipped 2026-03-31)
 
 **Milestone Goal:** Add `gemini.py` converter so `ai-codebase-mentor install --for gemini` generates Gemini-native files, following the same monorepo + converter pattern as Claude and OpenCode.
 
@@ -153,10 +153,10 @@ Plans:
   1. `ai-codebase-mentor install --for gemini` and `--for all` work end-to-end from a fresh `pip install ai-codebase-mentor==1.3.0`
   2. `ai-codebase-mentor status` output includes a Gemini line with correct install path and state
   3. PyPI release v1.3.0 is published and installable
-**Plans**: TBD
+**Plans**: TBD (complete)
 
 Plans:
-- [ ] 16-01: Wire `--for gemini` CLI help text, `--for all` iteration, status; bump version to 1.3.0; publish to PyPI
+- [x] 16-01: Wire `--for gemini` CLI help text, `--for all` iteration, status; bump version to 1.3.0
 
 ---
 
@@ -181,4 +181,4 @@ Plans:
 | 13. Live CLI Tests | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 14. Gemini Converter | v1.3 | 2/2 | Complete | 2026-03-31 |
 | 15. Gemini E2E Tests | v1.3 | 2/2 | Complete | 2026-03-31 |
-| 16. CLI Wiring + v1.3.0 | v1.3 | 0/1 | In Progress | - |
+| 16. CLI Wiring + v1.3.0 | v1.3 | 1/1 | Complete | 2026-03-31 |

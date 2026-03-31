@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Gemini CLI Converter
-status: active
-stopped_at: Phase 16 — ready for execution
+status: complete
+stopped_at: Milestone v1.3 complete — all 3 phases done, ready for PyPI publish
 last_updated: "2026-03-31"
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # State: Codebase Wizard
@@ -19,19 +19,19 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-29)
 
 **Core value:** A developer can run one command and walk away with a documented codebase — without clicking "Approve" fifteen times or writing documentation by hand.
-**Current focus:** Phase 16 — CLI Wiring + Version Bump to v1.3.0
+**Current focus:** Milestone v1.3 COMPLETE — ready for PyPI publish
 
 ## Current Position
 
-Phase: 16 (CLI Wiring + Version Bump) — READY FOR EXECUTION
-Plan: 0 of 1
+Phase: 16 (CLI Wiring + Version Bump) — COMPLETE
+Plan: 1 of 1 (done)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 21
-- Average duration: ~40 min
+- Total plans completed: 22
+- Average duration: ~38 min
 - Total execution time: ~14 hours
 
 **By Phase:**
@@ -39,17 +39,18 @@ Plan: 0 of 1
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | v1.0 (1-13) | 17 | ~12.75h | ~45 min |
-| v1.3 (14-16) | 4 | ~1.25h | ~19 min |
+| v1.3 (14-16) | 5 | ~1.5h | ~18 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 15-02, 15-01, 14-02, 14-01, 13-01
-- Trend: Accelerating (Phase 14-15 plans faster than v1.0 average)
+- Last 5 plans: 16-01, 15-02, 15-01, 14-02, 14-01
+- Trend: Accelerating (v1.3 plans faster than v1.0 average)
 
 | Phase 14 P01 | 4min | 2 tasks | 2 files |
 | Phase 14 P02 | 3min | 1 tasks | 1 files |
 | Phase 15 P01 | ~20min | 3 tasks | 2 files |
 | Phase 15 P02 | ~30min | 2 tasks | 2 files |
+| Phase 16 P01 | ~5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,7 @@ Recent decisions affecting current work:
 - [Phase 14]: Version comment corrected: v1.3 adds gemini (removed erroneous codex/v1.4 references)
 - [Phase 15]: E2E and live Gemini tests follow same fixture patterns as Claude/OpenCode
 - [Phase 15]: Gemini CLI outputs noise lines before actual response — assertions use substring checks
+- [Phase 16]: CLI help text `--for` option must list all runtimes including gemini
 
 ### Pending Todos
 
@@ -80,5 +82,5 @@ None currently.
 ## Session Continuity
 
 Last session: 2026-03-31
-Stopped at: Phase 16 — ready for execution
+Stopped at: Milestone v1.3 complete — tag v1.3.0 and push to trigger PyPI publish
 Resume file: None
